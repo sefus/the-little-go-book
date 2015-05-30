@@ -29,17 +29,17 @@ Go был разработан в качестве системного язык
 
 Есть и другие области применения, в которых Go превосходит другие языки. Например, не нужно устанавливать никаких дополнительных зависимостей при запуске скомпилированной программы на Go. Вам не нужно переживать, есть ли у ваших пользователей Ruby или установлена ли JVM, и если да, то какой версии. По этой причине Go становится все более популярным как язык для приложений командной строки и другим разновидностям утилит, которые вам необходимо распространять (например сборщик файлов логов).
 
-Put plainly, learning Go is an efficient use of your time. You won't have to spend long hours learning or even mastering Go, and you'll end up with something practical from your effort.
+Становится ясно, что изучение Go будет эффективным использованием вашего времени. Вам не нужно будет тратить много часов на изучение или хотя бы освоение Go, и в конечном итоге у вас останется что-то полезное от ваших усилий.
 
 ## Примечание автора
 
-I've hesitated writing this book for a couple reasons. The first is that Go's own documentation, in particular [Effective Go](https://golang.org/doc/effective_go.html), is solid.
+Я колебался писать эту книгу по нескольким причинам. Первая в том, что Go имеет солидную документацию, в частности [Effective Go](https://golang.org/doc/effective_go.html).
 
-The other is my discomfort at writing a book about a language. When I wrote The Little MongoDB Book, it was safe to assume most readers understood the basics of relational database and modeling. With The Little Redis Book, you could assume a familiarity with a key value store and take it from there.
+Вторая в моем дискомфорте при написании книги о языке. Когда я написал маленькую книгу о MongoDB (The Little MongoDB Book), можно было с уверенностью сказать, что большинство читателей поняли основы реляционных баз данных и моделирования. С маленькой книгой о Redis (The Little Redis Book) вы могли получить представление о хранилищах ключ-значение.
 
-As I think about the paragraphs and chapters that lay ahead, I know that I won't be able to make those same assumptions. How much time do you spend talking about interfaces knowing that for some, the concept will be new, while others won't need much more than *Go has interfaces*? Ultimately, I take comfort in knowing that you'll let me know if some parts are too shallow or others too detailed. Consider that the price of this book.
+Когда я думаю о абзацах  и главах, которые впереди, я знаю, что буду не в состоянии сделать те же предположения. Сколько времени займет разговор об интерфейсах, зная, что для некоторых это будет новая концепция, а другим будет достаточно сказать, что *В Go есть интерфейсы*? В конечном счете, меня утешает то, что вы можете дать мне знать, если какие-то части слишком поверхностные или другие слишком подробные. Считайте это ценой за книгу.
 
-# Getting Started
+# Приступая к работе
 
 If you're looking to play a little with Go, you should check out the [Go Playground](http://play.golang.org/) which lets you run code online without having to install anything. This is also the most common way to share Go code when seeking help in [Go's discussion forum](https://groups.google.com/forum/#!forum/golang-nuts) and places like StackOverflow.
 
