@@ -37,21 +37,23 @@ Go был разработан в качестве системного язык
 
 Вторая в моем дискомфорте при написании книги о языке. Когда я написал маленькую книгу о MongoDB (The Little MongoDB Book), можно было с уверенностью сказать, что большинство читателей поняли основы реляционных баз данных и моделирования. С маленькой книгой о Redis (The Little Redis Book) вы могли получить представление о хранилищах ключ-значение.
 
-Когда я думаю о абзацах  и главах, которые впереди, я знаю, что буду не в состоянии сделать те же предположения. Сколько времени займет разговор об интерфейсах, зная, что для некоторых это будет новая концепция, а другим будет достаточно сказать, что *В Go есть интерфейсы*? В конечном счете, меня утешает то, что вы можете дать мне знать, если какие-то части слишком поверхностные или другие слишком подробные. Считайте это ценой за книгу.
+Когда я думаю об абзацах  и главах, которые впереди, я знаю, что буду не в состоянии сделать те же предположения. Сколько времени займет разговор об интерфейсах, зная, что для некоторых это будет новая концепция, а другим будет достаточно сказать, что *в Go есть интерфейсы*? В конечном счете, меня утешает то, что вы можете дать мне знать, если какие-то части слишком поверхностные или другие слишком подробные. Считайте это ценой за книгу.
 
 # Приступая к работе
 
-If you're looking to play a little with Go, you should check out the [Go Playground](http://play.golang.org/) which lets you run code online without having to install anything. This is also the most common way to share Go code when seeking help in [Go's discussion forum](https://groups.google.com/forum/#!forum/golang-nuts) and places like StackOverflow.
+Если вы хотите немного поиграться с Go, вы должны посетить [Go Playground](http://play.golang.org/) которая позволяет запускать код на сайте без необходимости что-то устанавливать. Это также наиболее распространенный способ делиться кодом Go когда вам нужна помощь на форуме [Go's discussion forum](https://groups.google.com/forum/#!forum/golang-nuts) или на таких сайтах, как StackOverflow.
 
-Installing Go is straightforward. You can install it from source, but I suggest you use one of the pre-compiled binaries. When you [go to the download page](https://golang.org/dl/), you'll see installers for various platforms. Let's avoid these and learn how to set up Go ourselves. As you'll see, it isn't hard.
+Установка Go проста. Вы можете установить его из исходного кода, но я предлагаю вам использовать уже скомпилированные бинарные файлы. Когда вы [перейдете на страницу загрузки](https://golang.org/dl/), вы увидите установочные файлы для различных платформ.
 
-Except for simple examples, Go is designed to work when your code is inside a workspace. The workspace is a folder composed of `bin`, `pkg` and `src` subfolders. You might be tempted to force Go to follow your own style - don't.
+Давайте откажемся от них и научимся устанавливать Go самостоятельно. Как вы увидите, это не трудно. 
 
-Normally, I put my projects inside of `~/code`. For example, `~/code/blog` contains my blog. For Go, my workspace is `~/code/go` and my Go-powered blog would be in `~/code/go/src/blog`. Since that's a lot to type, I use a symbolic link to make it accessible via `~/code/blog`:
+Кроме простых примеров, Go спроектирован для работы с вашим кодом внутри рабочего пространства. Рабочее пространство это папка которая состоит из подпапок `bin`, `pkg` и `src`. Вы могли бы заставить Go следовать вашему стилю - не нужно.
+
+Как правило, я располагаю свои проекты внутри папки `~/code`. Например, `~/code/blog` содержит мой блог. Для Go мое рабочее пространство это `~/code/go` и мой работающий на Go блог будет в `~/code/go/src/blog`. Так как это долго печатать, я использую символическую ссылку, чтобы сделать его доступным по адресу  `~/code/blog`:
 
     ln -s ~/code/go/src/blog ~/code/blog
 
-In short, create a `go` folder with a `src` subfolder wherever you expect to put your projects.
+Короче говоря, создайте папку `go` с подпапкой `src` куда вы будете складывать свои проекты.
 
 ## OSX / Linux
 Download the `tar.gz` for your platform. For OSX, you'll most likely be interested in `go#.#.#.darwin-amd64-osx10.8.tar.gz`, where `#.#.#` is the latest version of Go.
