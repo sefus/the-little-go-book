@@ -128,15 +128,15 @@ if (name == "Goku" && power > 9000) || (name == "gohan" && power < 4000)  {
 
 Помимо этого, Go гораздо ближе к C, чем к C# или Java - не только с точки зрения синтаксиса, но и с точки зрения назначения. Это отражается в лаконичности и простоте языка, которая, надеюсь, будет очевидной, как только вы начнете изучать его.
 
-## Garbage Collected
+## Сборка мусора
 
-Some variables, when created, have an easy-to-define life. A variable local to a function, for example, disappears when the function exits. In other cases, it isn't so obvious -- at least to a compiler. For example, the lifetime of a variable returned by a function or referenced by other variables and objects can be tricky to determine. Without garbage collection, it's up to developers to free the memory associated with such variables at a point where the developer knows the variable isn't needed. How? In C, you'd literally `free(str);` the variable.
+Некоторые переменные при создании имеют легко определяемую жизнь. Локальная переменная функции, например, исчезает при выходе из функции. В других случаях это не так очевидно, по крайней мере для компилятора. Например, жизнь переменной, которая была возвращена функцией или на которую ссылаются другие переменные и объекты, бывает сложно определить. Без сборки мусора задачей разработчика являлась очистка памяти от переменных там, где по их мнению они не нужны. Как? В C, вы выполняли `free(str);` для переменной.
 
-Languages with garbage collectors (e.g., Ruby, Python, Java, JavaScript, C#, Go) are able to keep track of these and free them when they're no longer used. Garbage collection adds overhead, but it also eliminates a number of devastating bugs.
+Языки со сборщиками мусора (такие, как Ruby, Python, Java, JavaScript, C#, Go) способны отслеживать и освобождать переменные. которые больше не используются. Сборка мусора добавляет свои накладные расходы, но также устраняет ряд разрушительных ошибок.
 
-## Running Go Code
+## Запуск Go кода
 
-Let's start our journey by creating a simple program and learning how to compile and execute it. Open your favorite text editor and write the following code:
+Давайте начнем наше путешествие созданием простой программы и научимся её компилировать и выполнять. Откройте ваш любимый текстовый редактор и наберите следующий код:
 
 ```go
 package main
@@ -146,33 +146,33 @@ func main() {
 }
 ```
 
-Save the file as `main.go`. For now, you can save it anywhere you want; we don't need to live inside Go's workspace for trivial examples.
+Сохраните файл с именем `main.go`. Сейчас, вы можете сохранить его где угодно; не обязательно использовать рабочее пространство Go для тривиальных примеров.
 
-Next, open a shell/command prompt and change the directory to where you saved the file. For me, that means typing `cd ~/code`.
+Затем откройте оболочку/командную строку и перейдите в папку, в которую вы сохранили файл. Мне для этого нужно было набрать `cd ~/code`.
 
-Finally, run the program by entering:
+Наконец, запустите программу, введя:
 
 ```
 go run main.go
 ```
 
-If everything worked, you should see *it's over 9000!*.
+Если все работает, вы должны увидеть *it's over 9000!*.
 
-But wait, what about the compilation step? `go run` is a handy command that compiles *and* runs your code. It uses a temporary directory to build the program, executes it and then cleans itself up. You can see the location of the temporary file by running:
+Но подождите, что насчет этапа с компиляцией? `go run` это удобная команда, которая компилирует *и* запускает ваш код. Она использует временную директорию для сборки программы, выполняет её и затем очищает. Вы можете увидеть расположение временной папки выполнив:
 
 ```
 go run --work main.go
 ```
 
-To explicitly compile code, use `go build`:
+Чтобы явно скомпилировать код, используйте `go build`:
 
 ```
 go build main.go
 ```
 
-This will generate an executable `main` which you can run. On Linux / OSX, don't forget that you need to prefix the executable with dot-slash, so you need to type `./main`.
+Эта команда создаст исполняемый файл `main` который вы сможете запустить. В Linux / OSX не забудьте, что перед именем выполняемого файла нужно набрать точку и слэш: `./main`.
 
-While developing, you can use either `go run` or `go build`. When you deploy your code however, you'll want to deploy a binary via `go build` and execute that.
+Во время разработки, вы можете использовать `go run` или `go build`. Однако в случае развертывания кода, вам нужно переносить бинарный файл, полученный с помощью `go build` и выполнять его.
 
 ### Main
 
