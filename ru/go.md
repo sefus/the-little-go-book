@@ -56,37 +56,37 @@ Go был разработан в качестве системного язык
 Короче говоря, создайте папку `go` с подпапкой `src` куда вы будете складывать свои проекты.
 
 ## OSX / Linux
-Download the `tar.gz` for your platform. For OSX, you'll most likely be interested in `go#.#.#.darwin-amd64-osx10.8.tar.gz`, where `#.#.#` is the latest version of Go.
+Скачайте файл с расширением `tar.gz` для вашей платформы. Для OSX, то, что нужно, находится в файле `go#.#.#.darwin-amd64-osx10.8.tar.gz`, где `#.#.#` это последняя версия Go.
 
-Extract the file to `/usr/local` via `tar -C /usr/local -xzf go#.#.#.darwin-amd64-osx10.8.tar.gz`.
+Извлеките содержимое файла в `/usr/local` с помощью команды `tar -C /usr/local -xzf go#.#.#.darwin-amd64-osx10.8.tar.gz`.
 
-Set up two environment variables:
+Установите две переменные среды:
 
-  1. `GOPATH` points to your workspace, for me, that's `$HOME/code/go`.
-  2. We need to append Go's binary to our `PATH`.
+  1. `GOPATH` указывает на папку с вашим рабочим пространством, для меня, это `$HOME/code/go`.
+  2. Вам нужно добавить путь к исполняемым файлам Go в переменную `PATH`.
 
-You can set these up from a shell:
+Вы можете установить их с помощью команд:
 
     echo 'export GOPATH=$HOME/code/go' >> $HOME/.profile
     echo 'export PATH=$PATH:/usr/local/go/bin' >> $HOME/.profile
 
-You'll want to activate these variables. You can close and reopen your shell, or you can run `source $HOME/.profile`.
+Затем нужно активировать эти переменные. Вы можете закрыть и открыть заново ваш интерпретатор команд или выполнить `source $HOME/.profile`.
 
-Type `go version` and you'll hopefully get an output that looks like `go version go1.3.3 darwin/amd64`.
+Наберите `go version` и вы должны увидеть примерно следующее: `go version go1.3.3 darwin/amd64`.
 
 ## Windows
-Download the latest zip file. If you're on an x64 system, you'll want `go#.#.#.windows-amd64.zip`, where `#.#.#` is the latest version of Go.
+Скачайте zip-файл с последней версией. Если у вас 64-битная система, вам нужен `go#.#.#.windows-amd64.zip`, где `#.#.#` последняя версия Go.
 
-Unzip it at a location of your choosing. `c:\Go` is a good choice.
+Распакуйте его в какую-нибудь папку. `c:\Go` будет хорошим выбором.
 
-Set up two environment variables:
+Установите две переменные среды:
 
-  1. `GOPATH` points to your workspace. That might be something like `c:\users\goku\work\go`.
-  2. Add `c:\Go\bin` to your `PATH` environment variable.
+  1. `GOPATH` указывает на папку с вашим рабочим пространством. Это может быть что-то вроде `c:\users\goku\work\go`.
+  2. Добавьте `c:\Go\bin` в переменную `PATH`.
 
-Environment variables can be set through the `Environment Variables` button on the `Advanced` tab of the `System` control panel. Some versions of Windows provide this control panel through the `Advanced System Settings` option inside the `System` control panel.
+Переменные среды могут быть установлены с помощью кнопки `Environment Variables` на вкладке `Advanced` в панели управления `System`. Некоторые версии Windows отображают эту панель в пункте `Advanced System Settings` внутри панели `System`.
 
-Open a command prompt and type `go version`. You'll hopefully get an output that looks like `go version go1.3.3 windows/amd64`.
+Откройте окно командной строки и наберите `go version`. Вы увидите что-то подобное: `go version go1.3.3 windows/amd64`.
 
 # Chapter 1 - The Basics
 
