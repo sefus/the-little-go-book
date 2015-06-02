@@ -88,29 +88,29 @@ Go был разработан в качестве системного язык
 
 Откройте окно командной строки и наберите `go version`. Вы увидите что-то подобное: `go version go1.3.3 windows/amd64`.
 
-# Chapter 1 - The Basics
+# Глава 1 - Основы
 
-Go is a compiled, statically typed language with a C-like syntax and garbage collection. What does that mean?
+Go компилируемый язык со статической типизацией. Он имеет C-подобный синтаксис и сборку мусора. Что это означает?
 
-## Compilation
+## Компиляция
 
-Compilation is the process of translating the source code that you write into a lower level language -- either assembly (as is the case with Go), or some other intermediary language (as with Java and C#).
+Компиляция это процесс перевода исходного кода, который написали вы, в язык более низкого уровня – либо ассемблер (как в случае с Go), либо в какой-то другой промежуточный язык (как в случае с Java или C#).
 
-Compiled languages can be unpleasant to work with because compilation can be slow. It's hard to iterate quickly if you have to spend minutes or hours waiting for code to compile. Compilation speed is one of the major design goals of Go. This is good news for people working on large projects as well as those of us used to a quick feedback cycle offered by interpreted languages.
+С компилируемыми языками бывает неприятно работать потому, что компиляция может быть медленной. Сложно совершать быстрые итерации, если вы тратите минуты или часы в ожидании компиляции вашего кода. Скорость компиляции является одной из основных целей Go. Это хорошие новости для людей, которые работают над большими проектами, а так же для тех, кто привык быстро получать обратную связь при работе с интерпретируемыми языками.
 
-Compiled languages tend to run faster and the executable can be run without additional dependencies (at least, that's true for languages like C, C++ and Go which compile directly to assembly).
+Компилируемые языки, как правило, работают быстрее, и их исполняемые файлы могут быть выполнены без установки дополнительных зависимостей (по крайней мере это верно для таких языков, как C, C++ и Go, которые компилируются непосредственно в ассемблер).
 
-## Static Typing
+## Статическая типизация
 
-Being statically typed means that variables must be of a specific type (int, string, bool, []byte, etc.). This is either achieved by specifying the type when the variable is declared or, in many cases, letting the compiler infer the type (we'll look at examples shortly).
+Статическая типизация означает, что все переменные должны быть определенного типа (int, string, bool, []byte, и т. д.). Это достигается либо путем указания типа при объявлении переменной, либо, во многих случаях, тип определяет компилятор (мы скоро увидим примеры).
 
-There's a lot more that can be said about static typing, but I believe it's something better understood by looking at code. If you're used to dynamically typed languages, you might find this cumbersome. You're not wrong, but there are advantages, especially when you pair static typing with compilation. The two are often conflated. It's true that when you have one, you normally have the other but it isn't a hard rule. With a rigid type system, a compiler is able to detect problems beyond mere syntactical mistakes as well as make further optimizations.
+Можно много говорить о статической типизации, но я считаю, что ее лучше понять глядя на код. Если вы использовали языки с динамической типизацией, вам она может показаться громоздкой. Вы не ошибаетесь, но есть и преимущества, особенно когда она используется в сочетании с компиляцией. Эти две особенности нередко объединяются. Когда есть одна, обычно присутствует и другая, но это не строгое правило. Со строгой системой типов, компилятор может обнаруживать проблемы, которые выходят за рамки синтаксических ошибок, а также проводить дополнительную оптимизацию.
 
-## C-Like Syntax
+## C-подобный синтаксис
 
-Saying that a language has a C-like syntax means that if you're used to any other C-like languages such as C, C++, Java, JavaScript and C#, then you're going to find Go familiar -- superficially, at least. For example, it means `&&` is used as a boolean AND, `==` is used to compare equality, `{` and `}` start and end a scope, and array indexes start at 0.
+Говоря о том, что язык имеет C-подобный синтаксис, имеется ввиду то, что если вы уже использовали любой другой C-подобный язык как C, C++, Java, JavaScript и C#, то Go вам покажется похожим -- по крайней мере на первый взгляд. Например, это значит, что `&&` используется как логическое И, `==` применяется для сравнения, `{` и `}` обозначает начало и конец области видимости, а индексы массивов начинаются с 0.
 
-C-like syntax also tends to mean semi-colon terminated lines and parentheses around conditions. Go does away with both of these, though parentheses are still used to control precedence. For example, an `if` statement looks like this:
+C-подобный синтаксис также имеет тенденцию к постановке точки с запятой в окончании строк и использовании скобок вокруг условий. В Go нет ни того, ни другого, хотя скобки все еще используются для разделения приоритета. Например, оператор `if` выглядит так:
 
 ```go
 if name == "Leto" {
@@ -118,7 +118,7 @@ if name == "Leto" {
 }
 ```
 
-And in more complicated cases, parentheses are still useful:
+И в более сложных случая, скобки еще полезны:
 
 ```go
 if (name == "Goku" && power > 9000) || (name == "gohan" && power < 4000)  {
@@ -126,7 +126,7 @@ if (name == "Goku" && power > 9000) || (name == "gohan" && power < 4000)  {
 }
 ```
 
-Beyond this, Go is much closer to C than C# or Java - not only in terms of syntax, but in terms of purpose. That's reflected in the terseness and simplicity of the language which will hopefully start to become obvious as you learn it.
+Помимо этого, Go гораздо ближе к C, чем к C# или Java - не только с точки зрения синтаксиса, но и с точки зрения назначения. Это отражается в лаконичности и простоте языка, которая, надеюсь, будет очевидной, как только вы начнете изучать его.
 
 ## Garbage Collected
 
