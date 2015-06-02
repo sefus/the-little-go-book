@@ -1,3 +1,5 @@
+`Russian translation The Little Go Book`
+
 ## About ##
 The Little Go Book is a free book introducing Go.
 
