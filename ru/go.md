@@ -176,17 +176,17 @@ go build main.go
 
 ### Main
 
-Hopefully, the code that we just executed is understandable. We've created a function and printed out a string with the built-in `println` function. Did `go run` know what to execute because there was only a single choice? No. In Go, the entry point to a program has to be a function called `main` within a package `main`.
+Надеюсь код, который мы только что выполнили, был понятен. Мы создали функцию и напечатали строку с помощью встроенной функции `println`. Команда `go run` знала что выполнять потому, что у нее не было выбора? No. Нет, в Go точкой входа в программу является функция с именем `main` в пакете `main`.
 
-We'll talk more about packages in a later chapter. For now, while we focus on understanding the basics of Go, we'll always write our code within the `main` package.
+Мы поговорим о пакетах в позже. Сейчас, когда вы сфокусированы на понимании основ Go, мы всегда будем писать наш код в пакете `main`.
 
-If you want, you can alter the code and change the package name. Run the code via `go run` and you should get an error. Then, change the name back to `main` but use a different function name. You should see a different error message. Try making those same changes but use `go build` instead. Notice that the code compiles, there's just no entry point to run it. This is perfectly normal when you are, for example, building a library.
+Если хотите, вы можете отредактировать код и изменить имя пакета. Запустите код с помощью команды `go run` и вы получите ошибку. Затем измените имя обратно на `main`, но используйте другое имя функции. Вы должны увидеть другое сообщение об ошибке. Попробуйте сделать тоже самое используя команду `go build`. Обратите внимание на то, что код компилируется, но в нем нет точки входа чтобы запустить его. Это совершенно нормально когда вы, к примеру, создаете библиотеку.
 
-## Imports
+## Импорты
 
-Go has a number of built-in functions, such as `println`, which can be used without reference. We can't get very far though, without making use of Go's standard library and eventually using third-party libraries. In Go, the `import` keyword is used to declare the packages that are used by the code in the file.
+Go имеет ряд встроенных функций, таких как `println`, которые могут быть использованы без упоминания. Вы не сможете зайти далеко без использования стандартной библиотеки Go и библиотек других разработчиков. В Go ключевое слово `import` используется для объявления пакета, который будет использован кодом в файле.
 
-Let's change our program:
+Давайте изменим нашу программу:
 
 ```go
 package main
@@ -204,17 +204,17 @@ func main() {
 }
 ```
 
-Which you can run via:
+И запустим её с помощью команды:
 
 ```
 go run main.go 9000
 ```
 
-We're now using two of Go's standard packages: `fmt` and `os`. We've also introduced another built-in function `len`. `len` returns the size of a string, or the number of values in a dictionary, or, as we see here, the number of elements in an array. If you're wondering why we expect 2 arguments, it's because the first argument -- at index 0 -- is always the path of the currently running executable. (Change the program to print it out and see for yourself.)
+Здесь мы используем два стандартных пакета Go: `fmt` и `os`. Мы также можем увидеть другую встроенную функцию `len`. `len` возвращает длину строки, или число значений в словаре, или, как мы видим здесь, число элементов в массиве. Если вам интересно, почему мы ожидаем два аргумента, это потому, что первый аргумент имеет индекс 0 -- это всегда путь к текущему исполняемому файлу. (Изменить программу чтобы вывести его и убедитесь сами.)
 
-You've probably noticed we prefix the function name with the package, e.g., `fmt.Println`. This is different from many other languages. We'll learn more about packages in later chapters. For now, knowing how to import and use a package is a good start.
+Вы наверное заметили префикс перед именем функции, совпадающий с именем пакета, например `fmt.Println`. Это отличается от многих других языков. Мы узнаем больше о пакетах в следующих главах. Сейчас, знание того, как импортировать и использовать пакеты, уже хороший старт.
 
-Go is strict about importing packages. It will not compile if you import a package but don't use it. Try to run the following:
+Go строго относится к импорту пакетов. Программа не будет скомпилирована, если вы импортируете пакет и не используете его. Попробуйте выполнить:
 
 ```go
 package main
@@ -228,7 +228,7 @@ func main() {
 }
 ```
 
-You should get two errors about `fmt` and `os` being imported and not used. Can this get annoying? Absolutely. Over time, you'll get used to it (it'll still be annoying though). Go is strict about this because unused imports can slow compilation; admittedly a problem most of us don't have to this degree.
+Вы должны получить две ошибки о том, что `fmt` и `os` были импортированы и не использованы. Раздражает ли это? Безусловно. Со временем вы привыкните к этому (хотя это всё равно будет раздражать). Go строг в этом плане потому, что неиспользуемые пакеты замедляют компиляцию; admittedly a problem most of us don't have to this degree.
 
 Another thing to note is that Go's standard library is well documented. You can head over to <http://golang.org/pkg/fmt/#Println> to learn more about the `Println` function that we used. You can click on that section header and see the source code. Also, scroll to the top to learn more about Go's formatting capabilities.
 
