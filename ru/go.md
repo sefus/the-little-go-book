@@ -228,19 +228,19 @@ func main() {
 }
 ```
 
-Вы должны получить две ошибки о том, что `fmt` и `os` были импортированы и не использованы. Раздражает ли это? Безусловно. Со временем вы привыкните к этому (хотя это всё равно будет раздражать). Go строг в этом плане потому, что неиспользуемые пакеты замедляют компиляцию; admittedly a problem most of us don't have to this degree.
+Вы должны получить две ошибки о том, что `fmt` и `os` были импортированы и не использованы. Раздражает ли это? Безусловно. Со временем вы привыкните к этому (хотя это всё равно будет раздражать). Go строг в этом плане потому, что неиспользуемые пакеты замедляют компиляцию; правда у большинства из нас не возникает проблем с этим.
 
-Another thing to note is that Go's standard library is well documented. You can head over to <http://golang.org/pkg/fmt/#Println> to learn more about the `Println` function that we used. You can click on that section header and see the source code. Also, scroll to the top to learn more about Go's formatting capabilities.
+Еще одна вещь, которую хотелось бы отметить, это то, что стандартная библиотека Go хорошо документирована. Вы можете взглянуть на <http://golang.org/pkg/fmt/#Println> чтобы узнать больше о функции `Println`, которую мы использовали. Можно кликнуть на заголовок и увидеть её исходный код. Также, промотайте вверх страницы, чтобы узнать больше о возможностях форматирования Go.
 
-If you're ever stuck without internet access, you can get the documentation running locally via:
+Если у вас нет доступа к Интернету, можно посмотреть документацию локально, выполнив команду:
 
 ```
 godoc --http=:6060
 ```
 
-and pointing your browser to `http://localhost:6060`
+И ввести в браузере адрес `http://localhost:6060`
 
-## Variables and Declarations
+## Переменные и определения
 
 It'd be nice to begin and end our look at variables by saying *you declare and assign to a variable by doing x = 4.* Unfortunately, things are more complicated in Go. We'll begin our conversation by looking at simple examples. Then, in the next chapter, we'll expand this when we look at creating and using structures. Still, it'll probably take some time before you truly feel comfortable with it.
 
