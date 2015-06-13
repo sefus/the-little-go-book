@@ -242,11 +242,11 @@ godoc --http=:6060
 
 ## Переменные и определения
 
-It'd be nice to begin and end our look at variables by saying *you declare and assign to a variable by doing x = 4.* Unfortunately, things are more complicated in Go. We'll begin our conversation by looking at simple examples. Then, in the next chapter, we'll expand this when we look at creating and using structures. Still, it'll probably take some time before you truly feel comfortable with it.
+Было бы неплохо начать и закончить обзор переменных просто сказав: *вы можете объявить переменную и задать её значение с помощью x = 4.* К сожалению в Go все сложнее. Начнем наш разговор глядя на простые примеры. Затем, в следующей главе, познакомимся с ними более подробно рассматривая создание и использование структур. Тем не менее, полное понимание, возможно, займет некоторое время.
 
-You might be thinking *Woah! What can be so complicated about this?* Let's start looking at some examples.
+Вы можете подумать *Ого! Что тут может быть сложного?* Давайте посмотрим на несколько примеров.
 
-The most explicit way to deal with variable declaration and assignment in Go is also the most verbose:
+Наиболее явный способ использования переменных в Go также наиболее подробный:
 
 ```go
 package main
@@ -262,7 +262,7 @@ func main() {
 }
 ```
 
-Here, we declare a variable `power` of type `int`. By default, Go assigns a zero value to variables. Integers are assigned `0`, booleans `false`, strings `""` and so on. Next, we assign `9000` to our `power` variable. We can merge the first two lines:
+Здесь мы определяем переменную `power` типа `int`. По умолчанию, Go присваивает переменным нулевые значения. Для целых чисел это `0`, для булевых `false`, для строк `""` и так далее. Затем, мы задаем значение `9000` для переменной `power`. Две строки кода можно объединить в одну:
 
 ```go
 var power int = 9000
@@ -274,7 +274,7 @@ Still, that's a lot of typing. Go has a handy short variable declaration operato
 power := 9000
 ```
 
-This is handy, and it works just as well with functions:
+Это удобно и работает и точно также с функциями:
 
 ```go
 func main() {
@@ -286,7 +286,7 @@ func getPower() int {
 }
 ```
 
-It's important that you remember that `:=` is used to declare the variable as well as assign a value to it. Why? Because a variable can't be declared twice (not in the same scope anyway). If you try to run the following, you'll get an error.
+Важно помнить, что `:=` используется для объявления переменной, а так же задания ей значения. Почему? Потому, что переменную нельзя объявить дважды (по крайней мере в той же области видимости). Если вы попытаетесь выполнить следующее, вы получите ошибку.
 
 ```go
 func main() {
@@ -300,9 +300,9 @@ func main() {
 }
 ```
 
-The compiler will complain with *no new variables on left side of :=*. This means that when we first declare a variable, we use `:=` but on subsequent assignment, we use the assignment operator `=`. This makes a lot of sense, but it can be tricky for your muscle memory to remember when to switch between the two.
+Компиляция завершится с сообщением *нет новых переменных слева от :=*. Это значит, что когда переменная объявляется в первый раз, используется `:=`, но при последующих присваиваниях используется оператор `=`. В этом есть большой смысл, но может быть трудным для запоминания когда переключаться между этими операторами.
 
-If you read the error message closely, you'll notice that *variables* is plural. That's because Go lets you assign multiple variables (using either `=` or `:=`):
+Если вы читали сообщение об ошибке внимательно, вы могли заметить, что слово *переменные* во множественном числе. Это потому, что Go позволяет присваивать несколько значений переменным (использванием `=` или `:=`):
 
 
 ```go
@@ -312,7 +312,7 @@ func main() {
 }
 ```
 
-As long as one of the variables is new, `:=` can be used. Consider:
+До тех пор пока переменная является новой, можно использовать `:=`. Рассмотрим пример:
 
 ```go
 func main() {
@@ -324,9 +324,9 @@ func main() {
 }
 ```
 
-Although `power` is being used twice with `:=`, the compiler won't complain the second time we use it, it'll see that the other variable, `name`, is a new variable and allow `:=`. However, you can't change the type of `power`. It was declared (implicitly) as an integer and thus, can only be assigned integers.
+Хотя `power` используется дважды с помощью `:=`, компилятор не будет жаловаться когда мы будем использовать эту переменную второй раз, он видит что другая переменная `name` новая и разрешает использовать `:=`. Однако, вы не можете изменить тип переменой `power`. Она была объявлена (косвенным образом) как целое число и может принимать только целочисленные значения.
 
-For now, the last thing to know is that, like imports, Go won't let you have unused variables. For example,
+Теперь, последнее что нужно знать, это то, что Go, как и в случае с импортами, не позволяет иметь в программе неиспользуемые переменные. Например,
 
 ```go
 func main() {
@@ -335,7 +335,7 @@ func main() {
 }
 ```
 
-won't compile because `name` is declared but not used. Like unused imports it'll cause some frustration, but overall I think it helps with code cleanliness and readability.
+не будет скомпилировано потому, что `name` была объявлена, но не используется. Как и неиспользуемые импорты это будет причинять одни расстройства, но в целом, я думаю, это улучшает чистоту кода и его читаемость.
 
 There's more to learn about declaration and assignments. For now, remember that you'll use `var NAME TYPE` when declaring a variable to its zero value, `NAME := VALUE` when declaring and assigning a value, and `NAME = VALUE` when assigning to a previously declared variable.
 
