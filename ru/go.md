@@ -176,7 +176,7 @@ go build main.go
 
 ### Main
 
-Надеюсь код, который мы только что выполнили, был понятен. Мы создали функцию и напечатали строку с помощью встроенной функции `println`. Команда `go run` знала что выполнять потому, что у нее не было выбора? No. Нет, в Go точкой входа в программу является функция с именем `main` в пакете `main`.
+Надеюсь код, который мы только что выполнили, был понятен. Мы создали функцию и напечатали строку с помощью встроенной функции `println`. Команда `go run` знала что выполнять потому, что у нее не было выбора? Нет, в Go точкой входа в программу является функция с именем `main` в пакете `main`.
 
 Мы поговорим о пакетах в позже. Сейчас, когда вы сфокусированы на понимании основ Go, мы всегда будем писать наш код в пакете `main`.
 
@@ -268,7 +268,7 @@ func main() {
 var power int = 9000
 ```
 
-Still, that's a lot of typing. Go has a handy short variable declaration operator, `:=`, which can infer the type:
+Все еще много печатать. В Go есть короткий оператор объявления переменных `:=`, с которым можно объявить тип так:
 
 ```go
 power := 9000
@@ -337,11 +337,11 @@ func main() {
 
 не будет скомпилировано потому, что `name` была объявлена, но не используется. Как и неиспользуемые импорты это будет причинять одни расстройства, но в целом, я думаю, это улучшает чистоту кода и его читаемость.
 
-There's more to learn about declaration and assignments. For now, remember that you'll use `var NAME TYPE` when declaring a variable to its zero value, `NAME := VALUE` when declaring and assigning a value, and `NAME = VALUE` when assigning to a previously declared variable.
+Еще многое предстоит узнать об объявлениях и присваиваниях. А пока запомните, что когда используется `var ИМЯ ТИП` переменная объявляется с нулевым значением, `ИМЯ := ЗНАЧЕНИЕ` значение присваивается одновременно с объявлением переменной, а `ИМЯ = ЗНАЧЕНИЕ` когда присваивается значение уже объявленной переменной.
 
-## Function Declarations
+## Объявление функций 
 
-This is a good time to point out that functions can return multiple values. Let's look at three functions: one with no return value, one with one return value, and one with two return values.
+Настало время рассказать о том, что функции могут возвращать несколько значений. Возьмем три функции: одна не возвращает значение, другая возвращает одно значение, и третья возвращает два значения.
 
 ```go
 func log(message string) {
@@ -354,7 +354,7 @@ func power(name string) (int, bool) {
 }
 ```
 
-We'd use the last one like so:
+Последнюю можно использовать так:
 
 ```go
 value, exists := power("goku")
@@ -363,7 +363,7 @@ if exists == false {
 }
 ```
 
-Sometimes, you only care about one of the return values. In these cases, you assign the other values to `_`:
+Иногда нужно только одно из возвращаемых значений. В этом случае другое значение присваивают переменной `_`:
 
 ```go
 _, exists := power("goku")
@@ -372,9 +372,9 @@ if exists == false {
 }
 ```
 
-This is more than a convention. `_`, the blank identifier, is special in that the return value isn't actually assigned. This lets you use `_` over and over again regardless of the returned type.
+Это больше, чем просто договорённость. `_`, пустой идентификатор, его особенность в том, что возвращаемое значение в действительности не присваивается. Это позволяет вам использовать `_` снова и снова не зависимо от возвращаемого типа переменной.
 
-Finally, there's something else that you're likely to run into with function declarations. If parameters share the same type, we can use a shorter syntax:
+И наконец еще кое-что, с чем вы наверняка столкнетесь при объявлении функций. Если параметры имеют одинаковый тип, можно использовать короткий синтаксис:
 
 ```go
 func add(a, b int) int {
@@ -382,17 +382,17 @@ func add(a, b int) int {
 }
 ```
 
-Being able to return multiple values is something you'll use often. You'll also frequently use `_` to discard a value. Named return values and the slightly less verbose parameter declaration aren't that common. Still, you'll run into all of these sooner than later so it's important to know about them.
+Вы будете часто использовать возможность возвращения нескольких значений. И так же часто использовать идентификатор `_` для их игнорирования. Именованные возвращаемые значения и чуть более короткий способ указания параметров не являются общепринятыми практиками. Тем не менее, рано или поздно вы столкнетесь с ними, поэтому важно знать о них.
 
-## Before You Continue
+## Перед тем, как продолжить
 
-We looked at a number of small individual pieces and it probably feels disjointed at this point. We'll slowly build larger examples and hopefully, the pieces will start to come together.
+Мы рассмотрели несколько небольших отдельных кусочков, кажущихся разрозненными на данном этапе. Мы будем постепенно создавать примеры побольше, в надежде, что куски сойдутся вместе.
 
-If you're coming from a dynamic language, the complexity around types and declarations might seem like a step backwards. I don't disagree with you. For some systems, dynamic languages are categorically more productive.
+Если вы раньше работали с динамическим языком, сложности, связанные с типами и объявлениями, могут показаться шагом назад. Я соглашусь с вами. Для некоторых систем динамические языки являются более продуктивными.
 
-If you're coming from a statically typed language, you're probably feeling comfortable with Go. Inferred types and multiple return values are nice (though certainly not exclusive to Go). Hopefully as we learn more, you'll appreciate the clean and terse syntax.
+Если вы работали со статически типизированным языком, вы, вероятно, чувствуете себя комфортно с Go. Определяемые типы и множественные возвращаемые значения выглядят изящно (хотя, конечно, они есть не только в Go). Надеюсь, когда мы узнаем больше, вы оцените чистый и лаконичный синтаксис.
 
-# Chapter 2 - Structures
+# Глава 2 - Структуры
 
 Go isn't an object-oriented (OO) language like C++, Java, Ruby and C#. It doesn't have objects nor inheritance and thus, doesn't have the many concepts associated with OO such as polymorphism and overloading.
 
