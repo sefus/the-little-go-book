@@ -394,11 +394,11 @@ func add(a, b int) int {
 
 # Глава 2 - Структуры
 
-Go isn't an object-oriented (OO) language like C++, Java, Ruby and C#. It doesn't have objects nor inheritance and thus, doesn't have the many concepts associated with OO such as polymorphism and overloading.
+Go не является объектно-ориентированным языком (ОО-язык), таким как C++, Java, Ruby или C#. В нем нет объектов, нет наследования и многих других понятий, свойственных ОО-языкам, полиморфизма или перегрузки.
 
-What Go does have are structures, which can be associated with methods. Go also supports a simple but effective form of composition. Overall, it results in simpler code, but there'll be occasions where you'll miss some of what OO has to offer. (It's worth pointing out that *composition over inheritance* is an old battle cry and Go is the first language I've used that takes a firm stand on the issue.)
+В Go есть структуры, которые могут связаны с методами. В Go также есть простая, но эффективная форма композиции. В целом, это приводит к более простому коду, но бывают случаи когда вы вам будет не хватать некоторых возможностей ООП. (стоит отметить, что *композиция вместо наследования* старый лозунг и Go первый язык, который я использовал, занимающий твердую позицию по этому вопросу.)
 
-Although Go doesn't do OO like you may be used to, you'll notice a lot of similarities between the definition of a structure and that of a class. A simple example is the following `Saiyan` structure:
+Хотя Go и не использует ООП, вы заметите много похожего между определением структуры и использования классов. В качестве простого примера возьмем структуру `Saiyan`:
 
 ```go
 type Saiyan struct {
@@ -407,7 +407,7 @@ type Saiyan struct {
 }
 ```
 
-We'll soon see how to add a method to this structure, much like you'd have methods as part of a class. Before we do that, we have to dive back into declarations.
+Мы скоро увидим, как добавить метод к этой структуре, как вы добавляли бы методы к классам. Но перед тем, как это сделать, мы вернемся назад к объявлениям.
 
 ## Declarations and Initializations
 
