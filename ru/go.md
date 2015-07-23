@@ -409,11 +409,11 @@ type Saiyan struct {
 
 Мы скоро увидим, как добавить метод к этой структуре, как вы добавляли бы методы к классам. Но перед тем, как это сделать, мы вернемся назад к объявлениям.
 
-## Declarations and Initializations
+## Объявления и инициализация
 
-When we first looked at variables and declarations, we looked only at built-in types, like integers and strings. Now that we're talking about structures, we need to expand that conversation to include pointers.
+Когда мы впервые рассматривали переменные и их объявление, мы видели только встроенные типы данных, такие как целые числа и строки. Сейчас, когда мы говорим о структурах, мы должны дополнить этот разговор, включив в него указатели.
 
-The simplest way to create a value of our structure is:
+Самый простой способ создать значение нашей структуры выглядит так:
 
 ```go
 goku := Saiyan{
