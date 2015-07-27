@@ -422,14 +422,14 @@ goku := Saiyan{
 }
 ```
 
-*Note:* The trailing `,` in the above structure is required. Without it, the compiler will give an error. You'll appreciate the required consistency, especially if you've used a language or format that enforces the opposite.
+*Примечание:* Запятая в конце каждой строки внутри структуры является обязательной, включая последнюю строку. Без нее, компилятор выдаст ошибку. Вы оцените это соглашение по требованию замыкающей запятой если вы раньше использовали какой-то язык или формат, в котором этого требования не было.
 
-We don't have to set all or even any of the fields. Both of these are valid:
+Не обязательно задавать все значения или даже какое-то одно. Обе записи являются корректными:
 
 ```go
 goku := Saiyan{}
 
-// or
+// или
 
 goku := Saiyan{Name: "Goku"}
 goku.Power = 9000
@@ -443,7 +443,7 @@ Furthermore, you can skip the field name and rely on the order of the field decl
 goku := Saiyan{"Goku", 9000}
 ```
 
-What all of the above examples do is declare a variable `goku` and assign a value to it.
+Оба вышеуказанных примера объявляют переменную `goku` и присваивают ей значение.
 
 Many times though, we don't want a variable that is directly associated with our value but rather, we want a variable that has a pointer to our value. A pointer is a memory address; it's the location of where to find the actual value. It's a level of indirection. Loosely, it's the difference between being at a house and having directions to the house.
 
