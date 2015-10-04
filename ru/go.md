@@ -394,11 +394,11 @@ func add(a, b int) int {
 
 # Глава 2 - Структуры
 
-Go не является объектно-ориентированным языком (ОО-язык), таким как C++, Java, Ruby или C#. В нем нет объектов, нет наследования и многих других понятий, свойственных ОО-языкам, полиморфизма или перегрузки.
+Go не является объектно-ориентированным языком (ОО-языком), таким как C++, Java, Ruby или C#. В нем нет объектов, нет наследования и многих других понятий, свойственных ОО-языкам, полиморфизма или перегрузки.
 
-В Go есть структуры, которые могут связаны с методами. В Go также есть простая, но эффективная форма композиции. В целом, это приводит к более простому коду, но бывают случаи когда вы вам будет не хватать некоторых возможностей ООП. (стоит отметить, что *композиция вместо наследования* старый лозунг и Go первый язык, который я использовал, занимающий твердую позицию по этому вопросу.)
+В Go есть структуры, которые могут быть связаны с методами. В Go также есть простая, но эффективная форма композиции. В целом, это приводит к более простому коду, но бывают случаи когда вам будет не хватать некоторых возможностей ООП (стоит отметить, что *композиция вместо наследования* старый лозунг и Go первый язык, который я использовал, занимающий твердую позицию по этому вопросу).
 
-Хотя Go и не использует ООП, вы заметите много похожего между определением структуры и использования классов. В качестве простого примера возьмем структуру `Saiyan`:
+Хотя Go и не использует ООП, вы заметите много похожего между определением структуры и использованием классов. В качестве простого примера возьмем структуру `Saiyan`:
 
 ```go
 type Saiyan struct {
@@ -435,19 +435,19 @@ goku := Saiyan{Name: "Goku"}
 goku.Power = 9000
 ```
 
-Just like unassigned variables have a zero value, so do fields.
+Точно также, как и с переменными, необъявленные поля содержат нулевые значения.
 
-Furthermore, you can skip the field name and rely on the order of the field declarations (though for the sake of clarity, you should only do this for structures with few fields):
+Кроме того, можно опустить имена полей и указать сразу значения в порядке их следования при объявлении структуры (хотя для верности, лучше использовать этот способ только для структур с несколькими полями):
 
 ```go
 goku := Saiyan{"Goku", 9000}
 ```
 
-Оба вышеуказанных примера объявляют переменную `goku` и присваивают ей значение.
+Все из приведенных выше примеров объявляют переменную `goku` и присваивают ей значение.
 
-Many times though, we don't want a variable that is directly associated with our value but rather, we want a variable that has a pointer to our value. A pointer is a memory address; it's the location of where to find the actual value. It's a level of indirection. Loosely, it's the difference between being at a house and having directions to the house.
+Иногда нам не нужна переменная, которая напрямую связана со своим значением, а нужна переменная, которая хранит указатель на это значение. Указатель это адрес в памяти. Это то место, где можно найти фактическое значение. Это степень косвенности. Грубо говоря, между значением и указателем та же разница, что и между домом и его адресом.
 
-Why do we want a pointer to the value, rather than the actual value? It comes down to the way Go passes arguments to a function: as copies. Knowing this, what does the following print?
+Почему стоит использовать указатель вместо фактического значения? Это объясняется тем, что Go передает аргументы в функции как копии. Зная этот факт, что выведет следующий код?
 
 ```go
 func main() {
@@ -461,7 +461,7 @@ func Super(s Saiyan) {
 }
 ```
 
-The answer is 9000, not 19000. Why? Because `Super` made changes to a copy of our original `goku` value and thus, changes made in `Super` weren't reflected in the caller. To make this work as you probably expect, we need to pass a pointer to our value:
+Ответ 9000, а не 19000. Почему? Потому, что `Super` изменяет копию оригинального значения `goku` и таким образом изменения, сделанные в `Super` не отражаются на переданном значении. Для того, чтобы код работал как ожидается, нужно передать указатель на значение:
 
 ```go
 func main() {
@@ -475,11 +475,11 @@ func Super(s *Saiyan) {
 }
 ```
 
-We made two changes. The first is that we used the `&` operator to get the address of our value (it's called the *address of* operator). Next, we changed the type of parameter `Super` expects. It used to expect a value of type `Saiyan` but now expects an address of type `*Saiyan`, where `*X` means *pointer to value of type X*. There's obviously some relation between the types `Saiyan` and `*Saiyan`, but they are two distinct types.
+Мы сделали два изменения. Первое в том, что мы использовали оператор `&` для получения адреса. Затем мы изменили входной параметр в функции `Super`. Ожидалось значения типа `Saiyan` но теперь стал тип `*Saiyan`, где `*X` означает *указатель на значение типа X*. Очевидно, что существует связь между типами `Saiyan` и `*Saiyan`, но это все равно два разных типа.
 
-Note that we're still passing a copy of `goku's` value to `Super` it just so happens that `goku's` value has become an address. That copy is the same address as the original, which is what that indirection buys us. Think of it as copying the directions to a restaurant. What you have is a copy, but it still points to the same restaurant as the original.
+Отметим, что мы все щее передаем копию значения переменной `goku` в `Super`, но теперь значением `goku` является адрес. И это копия того же адреса, что хранится в оригинальной переменной . Думайте об этом как о копии пути в ресторан. То, что у вас есть – это копия, но она ведет к тому же ресторану, что и оригинал.
 
-We can prove that it's a copy by trying to change where it points to (not something you'd likely want to actually do):
+Мы можем проверить, что это копия, изменив указатель (хотя это вероятно не то, что вы хотели бы сделать):
 
 ```go
 func main() {
@@ -493,15 +493,15 @@ func Super(s *Saiyan) {
 }
 ```
 
-The above, once again, prints 9000. This is how many languages behave, including Ruby, Python, Java and C#. Go, and to some degree C#, simply make the fact visible.
+Код выше снова выведет 9000. Так ведут себя многие языки, включая Ruby, Python, Java и C#. Go и в некоторой степени C#, просто делают этот факт очевидным.
 
-It should also be obvious that copying a pointer is going to be cheaper than copying a complex structure. On a 64-bit machine, a pointer is 64 bits large. If we have a structure with many fields, maybe even a large string or array, creating copies can be expensive. The real value of pointers though is that they let you share values. Do we want `Super` to alter a copy of `goku` or alter the shared `goku` value itself?
+Очевидно, что копирование указателя будет стоить дешевле с точки зрения ресурсов, чем копирование сложной структуры. В 64 битной системе указатель занимает 64 бита памяти. Если мы имеем структуру со множеством полей, возможно с большими строками или массивами, то создание копии будет дорогой операцией. Смысл указателей в том, что они дают общий доступ к значениям. Хотим ли мы чтобы `Super` изменил копию `goku` или вместо этого изменил общее значение `goku`?
 
-All this isn't to say that you'll always want a pointer. At the end of this chapter, after we've seen a bit more of what we can do with structures, we'll re-examine the pointer-versus-value question.
+Все это не означает, что вам всегда нужно использовать указатели. В конце этой главы, после того, как мы увидим немного больше операций со структурами, мы пересмотрим вопрос указатели-против-значения. 
 
-## Functions on Structures
+## Функции в структурах
 
-We can associate a method with a structure:
+Мы можем ассоциировать метод со структурой:
 
 ```go
 type Saiyan struct {
@@ -514,7 +514,7 @@ func (s *Saiyan) Super() {
 }
 ```
 
-In the above code, we say that the type `*Saiyan` is the **receiver** of the `Super` method. We call `Super` like so:
+В коде выше мы говорим, что тип `*Saiyan` это **получатель** метода `Super`. Мы можем вызвать `Super` так:
 
 ```go
 goku := &Saiyan{"Goku", 9001}
@@ -522,9 +522,9 @@ goku.Super()
 fmt.Println(goku.Power) // will print 19001
 ```
 
-## Constructors
+## Конструкторы
 
-Structures don't have constructors. Instead, you create a function that returns an instance of the desired type (like a factory):
+Структуры не имеют конструкторов. Вместо этого, вы создаёте функцию, которая возвращает экземпляр нужного типа (как фабрика):
 
 ```go
 func NewSaiyan(name string, power int) *Saiyan {
@@ -535,9 +535,9 @@ func NewSaiyan(name string, power int) *Saiyan {
 }
 ```
 
-This pattern rubs a lot of developers the wrong way. On the one hand, it's a pretty slight syntactical change; on the other, it does feel a little less compartmentalized.
+Этот шаблон направляет многих разработчиков на неверный путь. С одной стороны – это лишь небольшое изменение синтаксиса, с другой – это позволяет чувствовать себя немного менее разобщенным.
 
-Our factory doesn't have to return a pointer; this is absolutely valid:
+Наша фабрика не должна возвращать указатель; это абсолютно справедливо:
 
 ```go
 func NewSaiyan(name string, power int) Saiyan {
@@ -548,11 +548,11 @@ func NewSaiyan(name string, power int) Saiyan {
 }
 ```
 
-## Fields of a Structure
+## Поля структур
 
-In the example that we've seen so far, `Saiyan` has two fields `Name` and `Power` of types `string` and `int`, respectively. Fields can be of any type -- including other structures and types that we haven't explored yet such as arrays, maps, interfaces and functions.
+В примерах, которые мы видели ранее, структура `Saiyan` имела два поля `Name` и `Power` типа `string` и `int` соответственно. Поля могут быть любого типа, включая другие структуры и типы, которые мы еще не рассматривали, такие как: массивы, карты, интерфейсы и функции.
 
-For example, we could expand our definition of `Saiyan`:
+Например, мы могли бы расширить определение `Saiyan`:
 
 ```go
 type Saiyan struct {
@@ -562,7 +562,7 @@ type Saiyan struct {
 }
 ```
 
-which we'd initialize via:
+и инициализировали бы так:
 
 ```go
 gohan := &Saiyan{
@@ -576,9 +576,9 @@ gohan := &Saiyan{
 }
 ```
 
-## Composition
+## Композиция
 
-Go supports composition, which is the act of including one structure into another. In some languages, this is called a trait or a mixin. Languages that don't have an explicit composition mechanism can always do it the long way. In Java:
+Go поддерживает композицию, которая является включением одной структуры в другую. В некоторых языках это называется трейт (trait) или примесь (mixin). Языки, которые не имеют явной поддержки механизма композиции всегда могут пойти долгим путем. В Java:
 
 ```go
 public class Person {
@@ -590,10 +590,10 @@ public class Person {
 }
 
 public class Saiyan {
-  // Saiyan is said to have a person
+  // говорим, что Saiyan включает Person
   private Person person;
 
-  // we forward the call to person
+  // ме переадресуем вызов классу Person
   public string getName() {
     return this.person.getName();
   }
@@ -601,7 +601,7 @@ public class Saiyan {
 }
 ```
 
-This can get pretty tedious. Every method of `Person` needs to be duplicated in `Saiyan`. Go avoids this tediousness:
+Это довольно утомительно. Каждый метод класса `Person` нужно продублировать в классе `Saiyan`. Go избегает этого занудства:
 
 ```go
 type Person struct {
@@ -617,7 +617,7 @@ type Saiyan struct {
   Power int
 }
 
-// and to use it:
+// и для использования этого:
 goku := &Saiyan{
   Person: &Person{"Goku"},
   Power: 9001,
@@ -625,7 +625,7 @@ goku := &Saiyan{
 goku.Introduce()
 ```
 
-The `Saiyan` structure has a field of type `*Person`. Because we didn't give it an explicit field name, we can implicitly access the fields and functions of the composed type. However, the Go compiler *did* give it a field name, consider the perfectly valid:
+Структура `Saiyan` имеет поле типа `*Person`. Так как мы не дали явного имени полю, мы получаем косвенный доступ к полям и методам составного типа. Однако, компилятор Go *дал* имя этому полю, что прекрасно видно:
 
 ```go
 goku := &Saiyan{
@@ -635,15 +635,15 @@ fmt.Println(goku.Name)
 fmt.Println(goku.Person.Name)
 ```
 
-Both of the above will print "Goku".
+Оба метода выведут "Goku".
 
-Is composition better than inheritance? Many people think that it's a more robust way to share code. When using inheritance, your class is tightly coupled to your superclass and you end up focusing on hierarchy rather than behavior.
+Композиция лучше наслеования? Многие люди считают, что это более надежный способ делиться кодом. При использовании наследования, ваш класс тесно связан с суперклассом и в конечном итоге вы сфокусированы на иерархии, а не на поведении.
 
-### Overloading
+### Перегрузка
 
-While overloading isn't specific to structures, it's worth addressing. Simply, Go doesn't support overloading. For this reason, you'll see (and write) a lot of functions that look like `Load`, `LoadById`, `LoadByName` and so on.
+Перегрузка не является специфичной операцией для структур, она стоит адресации. Проще говоря, Go не поддерживает перегрузку. По этой причине вы увидите (и напишете) множество функций вроде `Load`, `LoadById`, `LoadByName` и так далее.
 
-However, because implicit composition is really just a compiler trick, we can "overwrite" the functions of a composed type. For example, our `Saiyan` structure can have its own `Introduce` function:
+Тем не менее, поскольку неявная композиция на самом деле это трюк компилятора, мы можем "переписать" функции композитного типа. Например, наша структура `Saiyan` может иметь собственную функцию `Introduce`:
 
 ```go
 func (s *Saiyan) Introduce() {
@@ -651,23 +651,24 @@ func (s *Saiyan) Introduce() {
 }
 ```
 
-The composed version is always available via `s.Person.Introduce()`.
+Композитная функция всегда доступна через `s.Person.Introduce()`.
 
-## Pointers versus Values
+## Указатели против значений
 
-As you write Go code, it's natural to ask yourself *should this be a value, or a pointer to a value?* There are two pieces of good news. First, the answer is the same regardless of which of the following we're talking about:
+Когда вы пишете код на Go, вполне естественно задать себе вопрос:  *должен ли я использовать значение или указатель на это значение?* Есть две хорошие новости. Первая – ответ не зависит от следующих элементов, перечисленных ниже:
 
-* A local variable assignment
-* Field in a structure
-* Return value from a function
-* Parameters to a function
-* The receiver of a method
+* Присваивание локальной переменной
+* Поле в структуре
+* Возвращение значения из функции
+* Параметры функции
+* Получатель метода
 
-Secondly, if you aren't sure, use a pointer.
+Вторая – если вы не уверены, используйте указатель.
 
-As we already saw, passing values is a great way to make data immutable (changes that a function makes to it won't be reflected in the calling code). Sometimes, this is the behavior that you'll want but more often, it won't be.
+Как мы уже видели, передача значения является хорошим способом сделать данные неизменяемыми (изменения, совершенные в функции не влияют на исходное значение). 
+Иногда это тот результат которого вы хотите, но чаще это не так.
 
-Even if you don't intend to change the data, consider the cost of creating a copy of large structures. Conversely, you might have small structures, say:
+Даже если вы не собираетесь изменять данные, учитывайте стоимость создания копий больших структур. И наоборот, возможно, у вас есть маленькие структуры:
 
 ```go
 type Point struct {
@@ -676,13 +677,13 @@ type Point struct {
 }
 ```
 
-In such cases, the cost of copying the structure is probably offset by being able to access `X` and `Y` directly, without any indirection.
+В таких случаях стоимость копирования структуры будет смещена в пользу прямого доступа к `X` и `Y` непосредственно без какой-либо косвенности.
 
-Again, these are all pretty subtle cases. Unless you're iterating over thousands or possibly tens of thousands of such points, you wouldn't notice a difference.
+Опять же, это всё тонкие случаи. Если вы не производите итерацию по тысячам или десяткам тысяч таких указателей, вы, возможно, не заметите разницу.
 
-## Before You Continue
+## Перед тем как продолжить
 
-From a practical point of view, this chapter introduced structures, how to make an instance of a structure a receiver of a function, and added pointers to our existing knowledge of Go's type system. The following chapters will build on what we know about structures as well as the inner workings that we've explored.
+С практической точки зрения, эта глава является введением в структуры, о том, как сделать экземпляр структуры получающий функцию и добавляет указатели в вашим знаниям о системе типов Go. В следующих главах мы будем опираться на то, что уже знаем о структурах и о том как они работают.
 
 # Chapter 3 - Maps, Arrays and Slices
 
