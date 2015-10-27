@@ -685,28 +685,28 @@ type Point struct {
 
 С практической точки зрения, эта глава является введением в структуры, о том, как сделать экземпляр структуры получающий функцию и добавляет указатели в вашим знаниям о системе типов Go. В следующих главах мы будем опираться на то, что уже знаем о структурах и о том как они работают.
 
-# Chapter 3 - Maps, Arrays and Slices
+# Глава 3 - Карты, Массивы и Срезы
 
-So far we've seen a number of simple types and structures. It's now time to look at arrays, slices and maps.
+Ранее мы уже видели несколько простых структур. Настало время познакомиться с массивами, срезами и картами.
 
-## Arrays
+## Массивы
 
-If you come from Python, Ruby, Perl, JavaScript or PHP (and more), you're probably used to programming with *dynamic arrays*. These are arrays that resize themselves as data is added to them. In Go, like many other languages, arrays are fixed. Declaring an array requires that we specify the size, and once the size is specified, it cannot grow:
+Если вы уже знакомы с Python, Ruby, Perl, JavaScript или PHP (и т. д.), при программировании вы скорее всего использовали *динамические массивы*. Это массивы, которые способны изменять свой размер в зависимости от хранимых в них данных. В Go, и как во многих других языках, массивы фиксированы. При объявлении массива необходимо указать его размер, после чего изменить его нельзя:
 
 ```go
 var scores [10]int
 scores[0] = 339
 ```
 
-The above array can hold up to 10 scores using indexes `scores[0]` through `scores[9]`. Attempts to access an out of range index in the array will result in a compiler or runtime error.
+Массив выше может хранить до 10 очков, используя индексы от `scores[0]` до `scores[9]`. При попытке обращения к индексам, не входящим в этот диапазон, произойдет ошибка на этапе компиляции или выполнении программы.
 
-We can initialize the array with values:
+Мы можем инициализировать массив вместе со значениями:
 
 ```go
 scores := [4]int{9001, 9333, 212, 33}
 ```
 
-We can use `len` to get the length of the array. `range` can be used to iterate over it:
+Можно использовать `len` для получения размера массива. `range` используется для итерации по нему:
 
 ```go
 for index, value := range scores {
@@ -714,31 +714,30 @@ for index, value := range scores {
 }
 ```
 
-Arrays are efficient but rigid. We often don't know the number of elements we'll be dealing with upfront. For this, we turn to slices.
+Массивы эффективны в использовании, но жестко заданы. Часто мы не знаем заранее число используемых элементов. В таких случаях применяются срезы.
 
-## Slices
+## Срезы
 
-In Go, you rarely, if ever, use arrays directly. Instead, you use slices. A slice is a lightweight structure that wraps and represents a portion of an array. There are a few ways to create a slice, and we'll go over when to use which later on. The first is a slight variation on how we created an array:
+В Go вы редко, даже почти никогда, не будете использовать массивы напрямую. Вместо них вы будете использовать срезы. Срез – это легковесная структура, которая представляет собой часть массива. Есть несколько способов создать срез, и мы позже рассмотрим их подробнее. Первый способ является слегка измененным способом объявления массива:
 
 ```go
 scores := []int{1,4,293,4,9}
 ```
 
-Unlike the array declaration, our slice isn't declared with a length within the square brackets. To understand how the two are different, let's see another way to create a slice, using `make`:
+В отличии от декларирования массива, срез объявлен без указания длины в квадратных скобках. Для того, чтобы понять их различия, давайте рассмотрим другой способ создания среза с использованием `make`:
 
 ```go
 scores := make([]int, 10)
 ```
 
-We use `make` instead of `new` because there's more to creating a slice than just allocating the memory (which is what `new` does). Specifically, we have to allocate the memory for the underlying array and also initialize the slice.  In the above, we initialize a slice with a length of 10 and a capacity of 10. The length is the size of the slice, the capacity is the size of the underlying array. Using `make` we can specify the two separately:
+Мы используем `make` вместо `new` потому, что при создании среза происходит немного больше, чем просто выделение памяти (что делает `new`). В частности, мы должны выделить память для массива, а также инициализировать срез. В приведенном выше примере мы создаем срез длиной 10 и вместимостью 10. Длина – это размер среза. Вместимость – это размер лежащего в его основе массива. При использовании `make` мы можем указать эти два параметра отдельно:
 
 ```go
 scores := make([]int, 0, 10)
 ```
+Эта инструкция создает срез с длиной 0 и вместимостью 10. (Если вы были внимательны, вы могли заметить, что `make` и `len` *были* перегружены. Go – это такой язык, в котором, к разочарованию некоторых, используются возможности, недоступные разработчикам).
 
-This creates a slice with a length of 0 but with a capacity of 10. (If you're paying attention, you'll note that `make` and `len` *are* overloaded. Go is a language that, to the frustration of some, makes use of features which aren't exposed for developers to use.)
-
-To better understand the interplay between length and capacity, let's look at some examples:
+Для лучшего понимания взаимосвязи длины и вместимости, рассмотрим несколько примеров:
 
 ```go
 func main() {
@@ -748,17 +747,17 @@ func main() {
 }
 ```
 
-Our first example crashes. Why? Because our slice has a length of 0. Yes, the underlying array has 10 elements, but we need to explicitly expand our slice in order to access those elements. One way to expand a slice is via `append`:
+Наш первый пример не работает. Почему? Потому, что срез имеет длину 0. Да, в его основе лежит массив, содержащий 10 элементов, но нам нужно явно расширить срез для получения доступа к этим элементам. Один из способов расширить срез – это `append`:
 
 ```go
 func main() {
   scores := make([]int, 0, 10)
   scores = append(scores, 5)
-  fmt.Println(scores) // prints [5]
+  fmt.Println(scores) // выведет [5]
 }
 ```
 
-But that changes the intent of our original code. Appending to a slice of length 0 will set the first element. For whatever reason, our crashing code wanted to set the element at index 5. To do this, we can re-slice our slice:
+Но такой способ изменит смысл оригинального кода. Добавление элемента к срезу длинной 0 является установкой первого значения. По определённым причинам наш нерабочий код требует установки элемента по индексу 5. Чтобы это сделать, мы должны пере-срезать наш срез:
 
 ```go
 func main() {
@@ -769,9 +768,11 @@ func main() {
 }
 ```
 
-How large can we resize a slice? Up to its capacity which, in this case, is 10. You might be thinking *this doesn't actually solve the fixed-length issue of arrays.* It turns out that `append` is pretty special. If the underlying array is full, it will create a new larger array and copy the values over (this is exactly how dynamic arrays work in PHP, Python, Ruby, JavaScript, ...). This is why, in the example above that used `append`, we had to re-assign the value returned by `append` to our `scores` variable: `append` might have created a new value if the original had no more space.
+Как сильно мы можем изменить размер среза? До размера его вместимости, в нашем случае это 10.
 
-If I told you that Go grew arrays with a 2x algorithm, can you guess what the following will output?
+ Вы можете подумать *на самом деле это не решает проблему фиксированной длины массивов.* Оказывается, что `append` это что-то особенное. Если основной массив заполнен, создается больший массив и все значения копируются в него (также работают динамические массивы в PHP, Python, Ruby, JavaScript, ...). Поэтому пример выше использует `append`, мы должны повторно присвоить значение, которое было возвращено `append` переменной `scores`: `append` может создать новое значение, если в исходном не хватает места.
+
+Если я скажу вам, что Go увеличивает массивы в два раза, вы сможете догадаться, что выведет данный код?
 
 ```go
 func main() {
@@ -782,8 +783,8 @@ func main() {
   for i := 0; i < 25; i++ {
     scores = append(scores, i)
 
-    // if our capacity has changed,
-    // Go had to grow our array to accommodate the new data
+    // если вместимость изменена,
+    // Go увеличивает массив, чтобы приспособиться к новым данным
     if cap(scores) != c {
       c = cap(scores)
       fmt.Println(c)
@@ -792,9 +793,9 @@ func main() {
 }
 ```
 
-The initial capacity of `scores` is 5. In order to hold 20 values, it'll have to be expanded 3 times with a capacity of 10, 20 and finally 40.
+Изначальная вместимость переменной `scores` это 5. Для того, чтобы вместить 20 значений, она должна быть расширена 3 раза до вместимости в 10, 20 и наконец 40.
 
-As a final example, consider:
+И как последний пример, рассмотрим:
 
 ```go
 func main() {
@@ -804,9 +805,9 @@ func main() {
 }
 ```
 
-Here, the output is going to be [0, 0, 0, 0, 0, 9332]. Maybe you thought it would be [9332, 0, 0, 0,0]? To a human, that might seem logical. To a compiler, you're telling it to append a value to a slice that already holds 5 values.
+Здесь вывод будет [0, 0, 0, 0, 0, 9332]. Возможно, вы думали что получится [9332, 0, 0, 0, 0]? Для человека это выглядит логично. Но для компилятора, вы говорите: добавить значение к срезу, который уже содержит 5 значений.
 
-Ultimately, there are four common ways to initialize a slice:
+В итоге, есть четыре способа инициализировать срез:
 
 ```go
 names := []string{"leto", "jessica", "paul"}
@@ -815,9 +816,9 @@ var names []string
 scores := make([]int, 0, 20)
 ```
 
-When do you use which? The first one shouldn't need much of an explanation. You use this when you know the values that you want in the array ahead of time.
+Когда какой использовать? Первый не требует особых объяснений. Его можно использовать когда вы заранее знаете значения массива.
 
-The second one is useful when you'll be writing into specific indexes of a slice. For example:
+Второй полезен когда вам нужно записывать значения по определенным индексам среза. Например:
 
 ```go
 func extractPowers(saiyans []*Saiyans) []int {
@@ -829,11 +830,11 @@ func extractPowers(saiyans []*Saiyans) []int {
 }
 ```
 
-The third version is a nil slice and is used in conjunction with `append`, when the number of elements is unknown.
+Третий случай  – это пустой срез. Используется в сочетании с `append`, когда число элементов заранее неизвестно.
 
-The last version lets us specify an initial capacity; useful if we have a general idea of how many elements we'll need.
+Последний способ позволяет задать изначальную вместимость; полезен когда у вас есть общее представление о том, сколько элементов вам нужно.
 
-Even when you know the size, `append` can be used. It's largely a matter of preference:
+Даже если вы знаете размер, можно использовать `append`. Это момент по большей части зависит от ваших предпочтений:
 
 ```go
 func extractPowers(saiyans []*Saiyans) []int {
@@ -845,16 +846,16 @@ func extractPowers(saiyans []*Saiyans) []int {
 }
 ```
 
-Slices as wrappers to arrays is a powerful concept. Many languages have the concept of slicing an array. Both JavaScript and Ruby arrays have a `slice` method. You can also get a slice in Ruby by using `[START..END]` or in Python via `[START:END]`. However, in these languages, a slice is actually a new array with the values of the original copied over. If we take Ruby, what's the output of the following?
+Срезы в роли оберток массивов представляют собой мощный концепт. Во многих языках существует понятие нарезки массива. И в JavaScript и в Ruby массивы имеют метод `slice`. Вы можете получить срез в Ruby используя `[START..END]` или в Python с помощью `[START:END]`. Однако в этих языках срезы в действительности являются новыми массивами со скопированными в них значениями. Если мы возьмем Ruby, что выведет следующий код?
 
-```go
+```ruby
 scores = [1,2,3,4,5]
 slice = scores[2..4]
 slice[0] = 999
 puts scores
 ```
 
-The answer is `[1, 2, 3, 4, 5]`. That's because `slice` is a completely new array with copies of values. Now, consider the Go equivalent:
+Ответ: `[1, 2, 3, 4, 5]`. Потому, что `slice` совершенно новый массив с копией значений. Теперь рассмотрим эквивалент в Go:
 
 ```go
 scores := []int{1,2,3,4,5}
@@ -863,29 +864,29 @@ slice[0] = 999
 fmt.Println(scores)
 ```
 
-The output is `[1, 2, 999, 4, 5]`.
+Результат: `[1, 2, 999, 4, 5]`.
 
-This changes how you code. For example, a number of functions take a position parameter. In JavaScript, if we want to find the first space in a string (yes, slices work on strings too!) after the first five characters, we'd write:
+Это изменяет принцип кодирования. Например несколько функций принимают номер позиции в качестве параметра. В JavaScript, если вам нужен символ в строке (да, срезы работают со строками тоже!) идущий после пятого, вам нужно написать:
 
 ```go
 haystack = "the spice must flow";
 console.log(haystack.indexOf(" ", 5));
 ```
 
-In Go, we leverage slices:
+В Go мы используем срезы:
 
 ```go
 strings.Index(haystack[5:], " ")
 ```
 
-We can see from the above example, that `[X:]` is shorthand for *from X to the end* while `[:X]` is shorthand for *from the start to X*. Unlike other languages, Go doesn't support negative values. If we want all of the values of a slice except the last, we do:
+В примере выше мы видим, что `[X:]` – это сокращение, которое означает *от X до конца*, а `[:X]` это короткая запись, означающая *от начала до X*. В отличие от других языков, Go здесь не поддерживает отрицательные индексы. Есди мы хотим получить все значения среза, кроме последнего, нам нужно выполнить:
 
 ```go
 scores := []int{1,2,3,4,5}
 scores = scores[:len(scores)-1]
 ```
 
-The above is the start of an efficient way to remove a value from an unsorted slice:
+С помощью этого способа мы можем реализовать эффективный способ удаления значения из несортированного среза:
 
 ```go
 func main() {
@@ -896,13 +897,13 @@ func main() {
 
 func removeAtIndex(source []int, index int) []int {
   lastIndex := len(source) - 1
-  //swap the last value and the value we want to remove
+  //меняем последнее значение и значение, которое хотим удалить, местами
   source[index], source[lastIndex] = source[lastIndex], source[index]
   return source[:lastIndex]
 }
 ```
 
-Finally, now that we know about slices, we can look at another commonly used built-in function: `copy`. `copy` is one of those functions that highlights how slices change the way we code. Normally, a method that copies values from one array to another has 5 parameters: `source`, `sourceStart`, `count`, `destination` and `destinationSource`. With slices, we only need two:
+Наконец, когда мы уже достаточно знаем о срезах, давайте взглянем ещё на одну часто используемую функцию: `copy`. `copy` одна из тех функций, которая показывает как срезы влияют на способ кодирования. Обычно метод, который копирует значения из одного массива в другой имеет 5 параметров: `source`, `sourceStart`, `count`, `destination` и `destinationSource`. При работе со срезами нам нужны только два:
 
 ```go
 import (
@@ -924,13 +925,13 @@ func main() {
 }
 ```
 
-Take some time and play with the above code. Try variations. See what happens if you change copy to something like `copy(worst[2:4], scores[:5])`, or what if you try to copy more or less than `5` values into `worst`?
+Немного поиграйте с кодом выше. Попробуйте различные вариации. Посмотрите, что произойдет, если вы измените копирование на `copy(worst[2:4], scores[:5])`, или посмотрите, что будет если вы попытаетесь скопировать больше, чем `5` значений в `worst`?
 
-## Maps
+## Карты
 
-Maps in Go are what other languages call hashtables or dictionaries. They work as you expect: you define a key and value, and can get, set and delete values from it.
+Карты в Go – это то, что в других языках называют хеш-таблицами или словарями. Они работают так, как и ожидается: вы определяете ключ и значение, можете получать, устанавливать и удалять значения.
 
-Maps, like slices, are created with the `make` function. Let's look at an example:
+Карты, как и срезы, создаются с помощью функции `make`. Давайте взглянем на пример:
 
 ```go
 func main() {
@@ -939,30 +940,30 @@ func main() {
   power, exists := lookup["vegeta"]
 
   // prints 0, false
-  // 0 is the default value for an integer
+  // 0 это значение по умолчанию для типа integer
   fmt.Println(power, exists)
 }
 ```
 
-To get the number of keys, we use `len`. To remove a value based on its key, we use `delete`:
+Для получения количества ключей используйте `len`. Для удаления значения по определенному ключу вызывайте `delete`:
 
 ```go
 // returns 1
 total := len(lookup)
 
-// has no return, can be called on a non-existing key
+// ничего не возвращает, можно указывать несуществующий ключ
 delete(lookup, "goku")
 ```
 
-Maps grow dynamically. However, we can supply a second argument to `make` to set an initial size:
+Карты увеличиваются динамически. Однако вы можете указать второй аргумент в `make` для установки начального значения:
 
 ```go
 lookup := make(map[string]int, 100)
 ```
 
-If you have some idea of how many keys your map will have, defining an initial size can help with performance.
+Если вы имеете какое-то представление о том, сколько ключей вам понадобится в карте, указание начального размера может помочь с производительностью.
 
-When you need a map as a field of a structure, you define it as:
+Когда вам нужна карта в роли поля структуры, вы указываете её так:
 
 ```go
 type Saiyan struct {
@@ -971,17 +972,17 @@ type Saiyan struct {
 }
 ```
 
-One way to initialize the above is via:
+Один из способов инициализации:
 
 ```go
 goku := &Saiyan{
   Name: "Goku",
   Friends: make(map[string]*Saiyan),
 }
-goku.Friends["krillin"] = ... //todo load or create Krillin
+goku.Friends["krillin"] = ... //загрузить или создать Krillin
 ```
 
-There's yet another way to declare and initialize values in Go. Like `make`, this approach is specific to maps and arrays. We can declare as a composite literal:
+Существует еще один способ объявления и инициализации значений в Go. Как и `make`, этот подход является специфичным для карт и массивов. Вы можете объявить карту как составной литерал:
 
 ```go
 lookup := map[string]int{
@@ -990,7 +991,7 @@ lookup := map[string]int{
 }
 ```
 
-We can iterate over a map using a `for` loop combined with the `range` keyword:
+Итерация по карте производится с помощью цикла `for` в комбинации с ключевым словом `range`:
 
 ```go
 for key, value := range lookup {
@@ -998,27 +999,27 @@ for key, value := range lookup {
 }
 ```
 
-Iteration over maps isn't ordered. Each iteration over a lookup will return the key value pair in a random order.
+Итерация по карте происходит не по порядку. Каждая итерация будет возвращать пару ключа и значения в случайном порядке.
 
-## Pointers versus Values
+## Указатели против значений
 
-We finished Chapter 2 by looking at whether you should assign and pass pointers or values. We'll now have this same conversation with respect to array and map values. Which of these should you use?
+Мы закончили главу 2 вопросом о том, следует ли присваивать и передавать указатели или значения. Сейчас вернемся к нему говоря уже о массивах и картах. Какой способ стоит использовать?
 
 ```go
 a := make([]Saiyan, 10)
-//or
+//или
 b := make([]*Saiyan, 10)
 ```
 
-Many developers think that passing `b` to, or returning it from, a function is going to be more efficient. However, what's being passed/returned is a copy of the slice, which itself is a reference. So with respect to passing/returning the slice itself, there's no difference.
+Многие разработчики считают, что  при передаче или возвращении `b` функция будет более эффективной. Тем не менее то, что передается/возвращается является копией среза, который в свою очередь является ссылкой. Таким образом в отношении передачи/возврата самого среза нет никакой разницы.
 
-Where you will see a difference is when you modify the values of a slice or map. At this point, the same logic that we saw in Chapter 2 applies. So the decision on whether to define an array of pointers versus an array of values comes down to how you use the individual values, not how you use the array or map itself.
+Разница будет видна когда вы изменяете значение среза или карты. В этом случае логика такая же как и в конце главы 2. Так что решение о том, объявлять ли массив указателей или массив значений, принимается исходя из того, что вы будете делать со значениями, а не с самими картами или массивами.
 
-## Before You Continue
+## Перед тем как продолжить
 
-Arrays and maps in Go work much like they do in other languages. If you're used to dynamic arrays, there might be a small adjustment, but `append` should solve most of your discomfort. If we peek beyond the superficial syntax of arrays, we find slices. Slices are powerful and they have a surprisingly large impact on the clarity of your code.
+Массивы и карты в Go работают так же, как и в других языках. При использовании динамических массивов существуют небольшие изменения, но `append` должен избавить вас от большинства проблем. Если мы хотим выйти за пределы поверхности массивов, мы используем срезы. Срезы – мощные конструкции, оказывающие большое влияние на чистоту вашего кода.
 
-There are edge cases that we haven't covered, but you're not likely to run into them. And, if you do, hopefully the foundation we've built here will let you understand what's going on.
+Мы не рассмотрели несколько крайних случаев, но вам скорее всего не прийдется вникать в них так глубоко. Хотя если это и понадобится, надеюсь основы, полученные здесь, помогут вам самостоятельно разобраться в том, что происходит.
 
 # Chapter 4 - Code Organization and Interfaces
 
