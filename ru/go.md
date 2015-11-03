@@ -1271,13 +1271,13 @@ func (l ConsoleLogger) Log(message string) {
 
 И, наконец, если вы новичок в использовании интерфейсов, вам может понадобиться некоторое время, чтобы получить какое-то представление о них. Тем не менее, когда вы впервые увидите, что функция ожидает какой-то параметр вроде `io.Reader`, мысленно поблагодарите её автора за то, что он не требует передавать ему больше чем, нужно.
 
-# Chapter 5 - Tidbits
+# Глава 5 - Лакомые кусочки
 
-In this chapter, we'll talk about a miscellany of Go's feature which didn't quite fit anywhere else.
+В этой главе мы поговорим о возможностях Go, которые не вписываются в остальные разделы.
 
-## Error Handling
+## Обработка ошибок
 
-Go's preferred way to deal with errors is through return values, not exceptions. Consider the `strconv.Atoi` function which takes a string and tries to convert it to an integer:
+Предпочтительным способом обработки ошибок в Go является возвращение значений вместо исключений. Взглянем на функцию `strconv.Atoi`, которая принимает строку и пытается конвертировать её в целое число:
 
 ```go
 package main
@@ -1295,14 +1295,14 @@ func main() {
 
   n, err := strconv.Atoi(os.Args[1])
   if err != nil {
-    fmt.Println("not a valid number")
+    fmt.Println("не является числом")
   } else {
     fmt.Println(n)
   }
 }
 ```
 
-You can create your own error type; the only requirement is that it fulfills the contract of the built-in `error` interface, which is:
+Вы можете создать свой тип ошибок. Единственное требование, которое необходимо выполнить, это реализовать встроенный интерфейс `error`:
 
 ```go
 type error interface {
@@ -1310,7 +1310,7 @@ type error interface {
 }
 ```
 
-More commonly, we can create our own errors by importing the `errors` package and using it in the `New` function:
+Также мы можем создать свою ошибку с помощью импорта пакета `errors` и вызова функции `New`:
 
 ```go
 import (
@@ -1327,13 +1327,13 @@ func process(int count) error {
 }
 ```
 
-There's a common pattern in Go's standard library of using error variables. For example, the `io` package has an `EOF` variable which is defined as:
+Это общепринятый способ использования переменных ошибок в стандартной библиотеке Go. Например, в пакете `io` есть переменная `EOL`, которая определяется так:
 
 ```go
 var EOF = errors.New("EOF")
 ```
 
-This is a package variable (it's defined outside of a function) which is publicly accessible (upper-case first letter). Various functions can return this error, say when we're reading from a file or STDIN. If it makes contextual sense, you should use this error, too. As consumers, we can use this singleton:
+Это переменная пакета  (определённая вне функции), которая имеет публичный доступ (имя начинается с большой буквы). Различные функции могут возвращать эту ошибку во время чтения из файла или STDIN. Если в вашем контексте она имеет смысл, вам тоже нужно её использовать. Так можно обработать чтение только одного файла:
 
 ```go
 package main
@@ -1352,11 +1352,11 @@ func main() {
 }
 ```
 
-As a final note, Go does have `panic` and `recover` functions. `panic` is like throwing an exception while `recover` is like `catch`; they are rarely used.
+И последнее замечание, в Go есть функции `panic` и `recover`. `panic` похожа на выброс исключения, а `recover` на `catch`. Они редко используются.
 
 ## Defer
 
-Even though Go has a garbage collector, some resources require that we explicitly release them. For example, we need to `Close()` files after we're done with them. This sort of code is always dangerous. For one thing, as we're writing a function, it's easy to forget to `Close` something that we declared 10 lines up. For another, a function might have multiple return points. Go's solution is the `defer` keyword:
+Хотя в Go и есть сборщик мусора, некоторые ресурсы требуют, чтобы мы явно освобождали их. Например, нам нужно вызывать `Close()` для закрытия файла, после того, как работа с ним окончена. Такой код всегда опасен. С одной стороны, когда мы пишем функцию, легко забыть вызвать `Close`, для того, что мы открыли на 10 строк выше. С другой, функция может иметь несколько мест с возвращением результата, и нужно вызывать закрытие ресурса в каждом из них. Решением в Go является ключевое слово `defer`:
 
 ```go
 package main
@@ -1377,25 +1377,25 @@ func main() {
 }
 ```
 
-If you try to run the above code, you'll probably get an error (the file doesn't exist). The point is to show how `defer` works. Whatever you `defer` will be executed after the method returns, even if it does so violently. This lets you release resources near where it’s initialized and takes care of multiple return points.
+Если вы попытаетесь выполнить этот код, вы, вероятно, получите ошибку (файл не существует). Смысл в том, чтобы показать как работает `defer`. Неважно, где находится ваш `defer`, он всё равно будет выполнен после того, как метод вернет результат. Это позволяет вам освобождать ресурсы прямо там же, где вы их инициализировали и спасает от дублирования кода в случае нескольких `return`.
 
 ## go fmt
 
-Most programs written in Go follow the same formatting rules, namely, a tab is used to indent and braces go on the same line as their statement.
+Большинство программ, написанных на  Go, используют одинаковые правила форматирования. Символ табуляции используется для отступа, а скобка ставится на той же строке, что и инструкция.
 
-I know, you have your own style and you want to stick to it. That's what I did for a long time, but I'm glad I eventually gave in. A big reason for this is the `go fmt` command. It's easy to use and authoritative (so no one argues over meaningless preferences).
+Я знаю, у вас есть свой собственный стиль и вы придерживаетесь его. Я следовал ему долгое время, но я рад, что в конечном итоге сдался. Главная причина этому была в команде `go fmt`. Она проста в использовании и не вызывает споров (по поводу личных предпочтений).
 
-When you're inside a project, you can apply the formatting rule to it and all sub-projects via:
+Когда вы находитесь внутри проекта, вы можете применить правила форматирования для него и всех под-проектов с помощью:
 
 ```
 go fmt ./...
 ```
 
-Give it a try. It does more than indent your code; it also aligns field declarations and alphabetically orders imports.
+Попробуйте. Она делает больше, чем просто расставляет отступы. Она выравнивает объявления полей, а так же сортирует ваши импорты в алфавитном порядке.
 
-## Initialized If
+## Инициализация в условии
 
-Go supports a slightly modified if-statement, one where a value can be initiated prior to the condition being evaluated:
+Go поддерживает немного модифицированные условные блоки. Инициализация значения в них имеет приоритет при вычислении условия:
 
 ```go
 if x := 10; count > x {
@@ -1403,7 +1403,7 @@ if x := 10; count > x {
 }
 ```
 
-That's a pretty silly example. More realistically, you might do something like:
+Это довольно простой пример. В реальном коде будет что-то такое:
 
 ```go
 if err := process(); err != nil {
@@ -1411,13 +1411,13 @@ if err := process(); err != nil {
 }
 ```
 
-Interestingly, while the values aren't available outside the if-statement, they are available inside any `else if` or `else`.
+Интересно, что в то время, как эти значения недоступны вне инструкции `if`, они доступны внутри `else if` или `else`.
 
-## Empty Interface and Conversions
+## Пустой интерфейс и преобразования
 
-In most object-oriented languages, a built-in base class, often named `object`, is the superclass for all other classes. Go, having no inheritance, doesn't have such a superclass. What it does have is an empty interface with no methods: `interface{}`. Since every type implements all 0 of the empty interface's methods, and since interfaces are implicitly implemented, every type fulfills the contract of the empty interface.
+В многих объектно-ориентированных языках существует базовый класс, часто называемый `object`, который является супер классом для всех остальных классов. В Go нет наследования и нет такого супер класса. Что у него есть, так это пустой интерфейс без методов: `interface{}`. Так как каждый тип реализует все 0 методов этого интерфейса, то можно сказать, что в неявном виде каждый тип реализует пустой интерфейс.
 
- If we wanted to, we could write an `add` function with the following signature:
+Если бы нам было нужно, мы бы могли написать функцию `add` со следующей сигнатурой:
 
 ```go
 func add(a interface{}, b interface{}) interface{} {
@@ -1425,18 +1425,18 @@ func add(a interface{}, b interface{}) interface{} {
 }
 ```
 
-To convert a variable to a specific type, you use `.(TYPE)`:
+Для преобразования переменной в определенный тип, используйте `.(ТИП)`:
 
 ```go
 return a.(int) + b.(int)
 ```
 
-You also have access to a powerful type switch:
+Также вы можете использовать такой switch:
 
 ```go
 switch a.(type) {
   case int:
-    fmt.Printf("a is now an int and equals %d\n", a)
+    fmt.Printf("a теперь int и равно %d\n", a)
   case bool, string:
     // ...
   default:
@@ -1444,11 +1444,11 @@ switch a.(type) {
 }
 ```
 
-You'll see and probably use the empty interface more than you might first expect. Admittedly, it won't result in clean code. Converting values back and forth is ugly and dangerous but sometimes, in a static language, it's the only choice.
+Вы встретите и, возможно, будете использовать пустой интерфейс чаще, чем может показаться с первого взгляда. Хотя стоит признать, что он не способствует чистоте кода. Преобразование значений туда и обратно – это и некрасиво и опасно. Но иногда в языках со статической типизацией это единственный выбор.
 
-## Strings and Byte Arrays
+## Строки и массивы байтов
 
-Strings and byte arrays are closely related. We can easily convert one to the other:
+Строки и массивы байтов тесто связаны. Мы можем легко конвертировать одно в другое:
 
 ```go
 stra := "the spice must flow"
@@ -1456,29 +1456,31 @@ byts := []byte(stra)
 strb := string(byts)
 ```
 
-In fact, this way of converting is common across various types as well. Some functions explicitly expect an `int32` or an `int64` or their unsigned counterparts. You might find yourself having to do things like:
+На самом деле, такой способ преобразования, является также общим для всех типов. Некоторые функции ожидают явно `int32`, или `int64`, или их беззнаковые эквиваленты. Используется это так:
 
 ```go
 int64(count)
 ```
 
-Still, when it comes to bytes and strings, it's probably something you'll end up doing often. Do note that when you use `[]byte(X)` or `string(X)`, you're creating a copy of the data. This is necessary because strings are immutable.
+Тем не менее, иметь дело с байтами и строками вы, вероятно, будете часто.
+Заметьте, что когда вы используете `[]byte(X)` или `string(X)`, вы создаёте копию данных. Это необходимо, так как строки в Go неизменяемы.
 
-Strings are made of `runes` which are unicode code points. If you take the length of a string, you might not get what you expect. The following prints 3:
+
+Строки состоят из `рун` (*в Go, тип rune является псевдонимом для int32*), которые являются частями Юникода. Если взять длину строки, мы можете получить не то, чего ожидали. Следующий код выведет 3:
 
     fmt.Println(len("椒"))
 
-If you iterate over a string using `range`, you'll get runes, not bytes. Of course, when you turn a string into a `[]byte` you'll get the correct data.
+Когда вы производите итерацию по строке с использованием `range`, вы получаете руны, а не байты. Конечно, когда вы переводите строку в `[]byte`, вы получаете корректные данные.
 
-## Function Type
+## Тип функция
 
-Functions are first-class types:
+Функция – это тип первого порядка:
 
 ```go
 type Add func(a int, b int) int
 ```
 
-which can then be used anywhere -- as a field type, as a parameter, as a return value.
+который можно использовать как угодно – как поле структуры, как параметр, как возвращаемое значение.
 
 ```go
 package main
@@ -1500,13 +1502,13 @@ func process(adder Add) int {
 }
 ```
 
-Using functions like this can help decouple code from specific implementations much like we achieve with interfaces.
+Использование таких функций может помочь отделить код от реализации, как и в случае с интерфейсами.
 
-## Before You Continue
+## Перед тем как продолжить
 
-We looked at various aspects of programming with Go. Most notably, we saw how error handling behaves and how to release resources such as connections and open files. Many people dislike Go's approach to error handling. It can feel like a step backwards. Sometimes, I agree. Yet, I also find that it results in code that's easier to follow. `defer` is an unusual but practical approach to resource management. In fact, it isn't tied to resource management only. You can use `defer` for any purpose, such as logging when a function exits.
+Мы рассмотрели различные аспекты программирования с Go. В частности, мы увидели, как происходит обработка ошибок и как освобождаются ресурсы на примере открытых файлов. Многие люди не любят подход Go к обработке ошибок. Она кажется шагом назад. Иногда, я согласен. Тем не менее, я считаю, что такой код легче отслеживать. `defer` является необычным, но практичным подходом к управлению ресурсами. На самом деле он не привязан конкретно к ресурсам. Вы можете использовать `defer` для любых целей, таких как логирование после завершения функции.
 
-Certainly, we haven't looked at all of the tidbits Go has to offer. But you should be feeling comfortable enough to tackle whatever you come across.
+Конечно мы рассмотрели не все вкусности, которые предлагает Go. Но вы должны чувствовать себя достаточно комфортно при понимании того, с чем вы столкнётесь.
 
 # Chapter 6 - Concurrency
 
