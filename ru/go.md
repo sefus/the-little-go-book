@@ -1510,13 +1510,13 @@ func process(adder Add) int {
 
 Конечно мы рассмотрели не все вкусности, которые предлагает Go. Но вы должны чувствовать себя достаточно комфортно при понимании того, с чем вы столкнётесь.
 
-# Chapter 6 - Concurrency
+# Глава 6: Конкарентность
 
-Go is often described as a concurrent-friendly language. The reason for this is that it provides a simple syntax over two powerful mechanisms: goroutines and channels.
+Go часто описывают, как дружелюбный к параллельному программированию язык. Причина этому заключается в предоставлении простого синтаксиса для двух мощных механизмов: горутин и каналов.
 
-## Goroutines
+## Горутины
 
-A goroutine is similar to a thread, but it is scheduled by Go, not the OS. Code that runs in a goroutine can run concurrently with other code. Let's look at an example:
+Горутины похожи на потоки, но они управляются самим Go, а не операционной системой. Код, который запускается как горутина, может работать одновременно с другим кодом. Давайте посмотрим на пример:
 
 ```go
 package main
@@ -1527,36 +1527,38 @@ import (
 )
 
 func main() {
-  fmt.Println("start")
+  fmt.Println("старт")
   go process()
-  time.Sleep(time.Millisecond * 10) // this is bad, don't do this!
-  fmt.Println("done")
+  time.Sleep(time.Millisecond * 10) // это плохо, не делайте так!
+  fmt.Println("готово")
 }
 
 func process() {
-  fmt.Println("processing")
+  fmt.Println("обработка")
 }
 ```
 
-There are a few interesting things going on here, but the most important is how we start a goroutine. We simply use the `go` keyword followed by the function we want to execute. If we just want to run a bit of code, such as the above, we can use an anonymous function. Do note that anonymous functions aren't only used with goroutines, however.
+Здесь происходит несколько интересных вещей, но самое главное то, как мы запускаем горутину. Мы просто используем ключевое слово `go`, а затем пишем функцию, которую хотим выполнить. Если нужно выполнить немного кода, мы можем воспользоваться анонимной функцией. Хотя стоит отметить, что анонимные функции используются не только вместе с горутинами.
 
 ```go
 go func() {
-  fmt.Println("processing")
+  fmt.Println("обработка")
 }()
 ```
 
-Goroutines are easy to create and have little overhead. Multiple goroutines will end up running on the same underlying OS thread. This is often called an M:N threading model because we have M application threads (goroutines) running on N OS threads. The result is that a goroutine has a fraction of overhead (a few KB) than OS threads. On modern hardware, it's possible to have millions of goroutines.
+Горутины просты в создании и не несут много накладных расходов. Несколько горутин будут работать по похожему на потоки операционной системы принципу. Это часто называют M:N поточной моделью, потому, что мы имеем M потоков приложения (горутин) запущенных в N потоков операционной системы. В результате этого горутины дают определённую долю оверхеда (несколько килобайт) по сравнению с потоками ОС. На современном железе возможно запустить миллион горутин.
 
-Furthermore, the complexity of mapping and scheduling is hidden. We just say *this code should run concurrently* and let Go worry about making it happen.
+Кроме того, вся внутренняя сложность скрыта. Мы просто говорим, что *этот код должен выполняться параллельно* и позволяем Go позаботиться обо всём остальном.
 
-If we go back to our example, you'll notice that we had to `Sleep` for a few milliseconds. That's because the main process exits before the goroutine gets a chance to execute (the process doesn't wait until all goroutines are finished before exiting). To solve this, we need to coordinate our code.
+Если мы вернёмся к примеру, то увидим, что выполняется `Sleep` на несколько миллисекунд. Это необходимо потому, что основной процесс завершается быстрее, чем успеет выполниться горутина (процесс не ждёт, пока все горутины выполнят свою работу перед выходом). Для того, чтобы решить эту проблему, нам нужно скоординировать наш код.
 
-## Synchronization
+## Синхронизация
 
-Creating goroutines is trivial, and they are so cheap that we can start many; however, concurrent code needs to be coordinated. To help with this problem, Go provides `channels`. Before we look at `channels`, I think it's important to understand a little bit about the basics of concurrent programming.
+Создание горутин тривиально и они дёшево стоят, поэтому мы можем запустить их много. Однако конкарентный код требует наличия согласованности. Для решения этой проблемы Go предоставляет каналы. Перед тем, как их рассмотреть, я думаю важным будет немного объяснить основы конкарентного программирования.
 
-Writing concurrent code requires that you pay specific attention to where and how you read and write values. In some ways, it's like programming without a garbage collector -- it requires that you think about your data from a new angle, always watchful for possible danger. Consider:
+
+Написание параллельного кода требует особого внимания к тому, как и где вы будете читать и записывать значения. В некотором роде, это как программирование без сборщика мусора – оно требует, чтобы вы взглянули на данные под другим углом и всегда были бдительны перед возможной опасностью.
+Рассмотрим:
 
 ```go
 package main
@@ -1581,13 +1583,13 @@ func incr() {
 }
 ```
 
-What do you think the output will be?
+Как вы считаете, что выведет этот код?
 
-If you think the output is `1, 2` you're both right and wrong. It's true that if you run the above code, you'll very likely get that output. However, the reality is that the behavior is undefined. Why? Because we potentially have multiple (two in this case) goroutines writing to the same variable, `counter`, at the same time. Or, just as bad, one goroutine would be reading `counter` while another writes to it.
+Если вы думаете, что результат будет `1, 2`, вы одновременно правы и нет. Это правда, что, если вы запустите этот код, вы скорее всего получите такой результат. Однако реальность такова, что поведение такого кода неопределённо. Почему? Потому, что мы потенциально имеем несколько (в данном случае две) горутины, пишущие одну и ту же переменную `counter` в одно и то же время. Или, что хуже, одна горутина может читать `counter` в то же время, когда другая записывает в него значение.
 
-Is that really a danger? Yes, absolutely. `counter++` might seem like a simple line of code, but it actually gets broken down into multiple assembly statements -- the exact nature is dependent on the platform that you're running. It's true that, in this example, the most likely case is things will run just fine. However, another possible outcome would be that they both see `counter` when its equal to `0` and you get an output of `1, 1`. There are worse possibilities, such as system crashes or accessing arbitrary pieces of data and incrementing it!
+Это действительно опасно? Определённо да. `counter++` может выглядеть, как простая строка кода, но в действительности она преобразуется в множество инструкций ассемблера, конкретная реализация которого зависит от платформы, на которой запущен код. Это правда, что в этом примере скорее всего всё будет работать хорошо. Тем не менее, возможен случай, когда обе горутины обратятся к значению `counter`, когда оно будет равно `0` и вы получите `1, 1` на выходе. В более худшем варианте это приведет к системному сбою или доступу к произвольным данным и инкрементированию их! 
 
-The only concurrent thing you can safely do to a variable is to read from it. You can have as many readers are you want, but writes need to be synchronized. There are various ways to do this, including using some truly atomic operations that rely on special CPU instructions. However, the most common approach is to use a mutex:
+Единственная параллельная вещь, которую вы можете делать безопасно с переменной – это читать её значение. Вы можете иметь столько читателей, сколько вам угодно, но запись необходимо синхронизировать. Есть несколько разных способов сделать это, в том числе некоторые действительно атомарные операции, которые опираются на специальные инструкции процессора. Тем не менее, наиболее распространённым подходом является использование мьютекса:
 
 ```go
 package main
@@ -1618,13 +1620,14 @@ func incr() {
 }
 ```
 
-A mutex serializes access to the code under lock. The reason we simply define our lock as `lock sync.Mutex` is because the default value of a `sync.Mutex` is unlocked.
+Мьютекс обеспечивает последовательный доступ с заблокированному коду. Причина по которой мы определяем нашу блокировку как `lock sync.Mutex` в том, что по умолчанию значение `sync.Mutex` разблокировано.
 
-Seems simple enough? The example above is deceptive. There's a whole class of serious bugs that can arise when doing concurrent programming. First of all, it isn't always so obvious what code needs to be protected. While it might be tempting to use coarse locks (locks that cover a large amount of code), that undermines the very reason we're doing concurrent programming in the first place. We generally want fine locks; else, we end up with a ten-lane highway that suddenly turns into a one-lane road.
+Выглядит достаточно просто? Но простота в этом примере обманчива. В нем есть целый класс ошибок, которые могут возникать во время параллельного программирования. Прежде всего, не всегда очевидно то, что код должен быть защищен. Хотя может быть и заманчиво использование грубых блокировок (которые охватывают почти весь код), это в первую очередь подрывает саму суть параллельного программирования. Как правило нужны небольшие блокировки, иначе мы превратим десятиполосное шоссе в однополосную дорогу.
 
-The other problem has to do with deadlocks. With a single lock, this isn't a problem, but if you're using two or more locks around the same code, it's dangerously easy to have situations where goroutineA holds lockA but needs access to lockB, while goroutineB holds lockB but needs access to lockA.
 
-It actually *is* possible to deadlock with a single lock, if we forget to release it. This isn't as dangerous as a multi-lock deadlock (because those are *really* tough to spot), but just so you can see what happens, try running:
+Другая проблема в том, что делать со взаимными блокировками. С одной блокировкой проблем нет, но когда вы используете две или больше в одном коде, возникает опасная ситуация, когда горутина А имеет блокировку А и ей необходим доступ к блокировке Б, которую держит горутина Б потому, что ей нужен доступ к блокировке А.
+
+В действительности взаимная блокировка *может* произойти и с одной, если вы забыли освободить её. Это не так опасно, как множественные блокировки (потому, что их *действительно* сложно определить), но вы можете увидеть как это происходит. Попробуйте выполнить:
 
 ```go
 package main
@@ -1645,47 +1648,47 @@ func main() {
 }
 ```
 
-There's more to concurrent programming than what we've seen so far. For one thing, since we can have multiple reads at the same time, there's another common mutex called a read-write mutex. This exposes two locking functions: one to lock readers and one to lock writers.
+При параллельном программировании происходит больше вещей, чем мы здесь видим. Поскольку мы имеем множество единовременных читателей, существует один общий мьютекс чтения-записи. Он запускает две блокирующие функции: одна для блокировки чтения и другая для блокировки записи. 
 
-Furthermore, part of concurrent programming isn't so much about serializing access across the narrowest possible piece of code; it's also about coordinating multiple goroutines. For example, sleeping for 10 milliseconds isn't a particularly elegant solution. What if a goroutine takes more than 10 milliseconds? What if it takes less and we're just wasting cycles? Also, what if instead of just waiting for goroutines to finish, we want to tell one *hey, I have new data for you to process!*?
+Кроме того, часть параллельного программирования связана не только с обеспечением сериализации доступа между различными частями кода, но и с координацией работы множества горутин. Например, засыпание на 10 миллисекунд не является элегантным решением. Что будет, если выполнение горутины займёт больше, чем 10 миллисекунд? А что, если меньше, и мы просто зря потратим ресурсы в ожидании? Что если бы вместо простого ожидания горутины мы могли бы сказать: *эй, у меня есть новые данные для твоей обработки*?
 
-These are all things that are doable without `channels`. Certainly for simpler cases, I believe you **should** use primitives such as `sync.Mutex` and `sync.RWMutex`, but as we'll see in the next section, `channels` aim at making concurrent programming cleaner and less error-prone.
+Все эти вещи выполнимы и без `каналов`. Конечно для простых случаев я считаю, что вы **должны** использовать такие примитивы как `sync.Mutex` и `sync.RWMutex`, но как мы увидим в следующем разделе, `каналы` помогают сделать код параллельного программирования более чистым и защищенным от ошибок.
 
-## Channels
+## Каналы
 
-The challenge with concurrent programming stems from sharing data. If your goroutines share no data, you needn't worry about synchronizing them. That isn't an option for all systems, however. In fact, many systems are built with the exact opposite goal in mind: to share data across multiple requests. An in-memory cache or a database, are good examples of this. This is becoming an increasingly common reality.
+Настоящим испытанием в конкарентном программировании является совместное использование данных. Если ваша горутина не предоставляет никаких данных, вам не нужно заботиться о её синхронизации. Хотя это и подходит не для всех систем. По факту, многие системы создаются с целью разделения данных между несколькими запросами. Кэширование в памяти или база данных будут хорошими примерами таких систем. 
 
-Channels help make concurrent programming saner by taking shared data out of the picture. A channel is a communication pipe between goroutines which is used to pass data. In other words, a goroutine that has data can pass it to another goroutine via a channel. The result is that, at any point in time, only one goroutine has access to the data.
+Каналы помогают сделать конкарентное программирование более разумным, выделяя совместные данные из общей картины. Канал – это труба для взаимодействия между горутинами, которая используется для передачи данных. Другими словами, горутина, которая имеет данные, может передать их в другую горутину с помощью канала. В результате, в любой момент времени только одна горутина имеет доступ к данным.
 
-A channel, like everything else, has a type. This is the type of data that we'll be passing through our channel. For example, to create a channel which can be used to pass an integer around, we'd do:
+Канал, как и всё остальное, имеет тип. Это тип данных, передаваемых через канал. Например, чтобы создать канал для передачи целых чисел, мы делаем:
 
 ```go
 c := make(chan int)
 ```
 
-The type of this channel is `chan int`. Therefore, to pass this channel to a function, our signature looks like:
+Типом этого канала является `chan int`. Для передачи этого канала в функцию используем такое определение:
 
 ```go
 func worker(c chan int) { ... }
 ```
 
-Channels support two operations: receiving and sending. We send to a channel by doing:
+Каналы поддерживают две операции: приём и отправка. Мы отправляем в канал выполняя:
 
 ```
 CHANNEL <- DATA
 ```
 
-and receive from one by doing
+и получаем из него
 
 ```
 VAR := <- CHANNEL
 ```
 
-The arrow points in the direction that data flows. When sending, the data flows into the channel. When receiving, the data flows out of the channel.
+Стрелка указывает направление потока данных. Когда происходит отправка, данные передаются в канал. При получении данные извлекаются из канала.
 
-The final thing to know before we look at our first example is that receiving and sending to and from a channel is blocking. That is, when we receive from a channel, execution of the goroutine won't continue until data is available. Similarly, when we send to a channel, execution won't continue until the data is received.
+Последняя вещь, которую необходимо знать перед тем, как посмотреть на первый пример, это то, что прием и отправка данных в и из канала являются блокирующими операциями. Это значит, что во время получения данных из канала выполнение горутины останавливается пока данные не доступны. Аналогично когда мы отправляем в канал, выполнение не продолжается пока данные не получены.
 
-Consider a system with incoming data that we want to handle in separate goroutines. This is a common requirement. If we did our data-intensive processing on the goroutine which accepts the incoming data, we'd risk timing out clients. First, we'll write our worker. This could be a simple function, but I'll make it part of a structure since we haven't seen goroutines used like this before:
+Рассмотрим систему, в которой входящие данные нам необходимо обработать в отдельных горутинах. Это обычное требование. Если мы делаем тяжелую обработку в горутине, которая принимает входящие данные, мы рискуем тем, что клиент может отключиться по тайм-ауту. Сначала мы напишем обработчик. Он может быть простой функцией, но я сделаю его частью структуры, так как до этого мы еще не видели горутин используемых таким образом:
 
 ```go
 type Worker struct {
@@ -1695,14 +1698,14 @@ type Worker struct {
 func (w Worker) process(c chan int) {
   for {
     data := <- c
-    fmt.Printf("worker %d got %d\n", w.id, data)
+    fmt.Printf("обработчик %d получил %d\n", w.id, data)
   }
 }
 ```
 
-Our worker is simple. It waits until data is available then "processes" it. Dutifully, it does this in a loop, forever waiting for more data to process.
+Наш обработчик прост. Он ждет пока данные не станут доступны, затем "обрабатывает" их. Он послушно делает это в бесконечном цикле ожидая данных для обработки.
 
-To use this, the first thing we'd do is start some workers:
+Для начала, запустим несколько обработчиков:
 
 ```go
 c := make(chan int)
@@ -1712,7 +1715,7 @@ for i := 0; i < 4; i++ {
 }
 ```
 
-And then we can give them some work:
+А затем дадим им немного работы:
 
 ```go
 for {
@@ -1721,7 +1724,7 @@ for {
 }
 ```
 
-Here's the complete code to make it run:
+Полный код для запуска:
 
 ```go
 package main
@@ -1752,38 +1755,39 @@ type Worker struct {
 func (w *Worker) process(c chan int) {
   for {
     data := <- c
-    fmt.Printf("worker %d got %d\n", w.id, data)
+    fmt.Printf("обработчик %d получил %d\n", w.id, data)
   }
 }
 ```
 
-We don't know which worker is going to get what data. What we do know, what Go guarantees, is that the data we send to a channel will only be received by a single receiver.
+Мы не знаем какой именно обработчик какие данные получает. Но мы знаем то, что Go гарантирует, что данные, отправляемые в канал, будут приняты только одним получателем.
 
-Notice that the only shared state is the channel, which we can safely receive from and send to concurrently. Channels provide all of the synchronization code we need and also ensure that, at any given time, only one goroutine has access to a specific piece of data.
+Обратите внимание на то, что единственное общее состояние, которое мы можем безопасно получать и отправлять одновременно – это канал. Каналы предоставляют весь код, необходимый для синхронизации, и позволяют убедиться в том, что только одна горутина имеет доступ к определенному участку данных.
 
-### Buffered Channels
+### Буферизированные каналы
 
-Given the above code, what happens if we have more data coming in than we can handle? You can simulate this by changing the worker to sleep after it has received data:
+А что произойдёт с кодом выше, если он получит больше данных, чем сможет обработать?
+Вы можете симулировать такую ситуацию изменив обработчик, добавив задержку после получения данных:
 
 ```go
 for {
   data := <- c
-  fmt.Printf("worker %d got %d\n", w.id, data)
+  fmt.Printf("обработчик %d получил %d\n", w.id, data)
   time.Sleep(time.Millisecond * 500)
 }
 ```
 
-What's happening is that our main code, the one that accepts the user's incoming data (which we just simulated with a random number generator) is blocking as it sends to the channel because no receiver is available.
-
-In cases where you need high guarantees that the data is being processed, you probably will want to start blocking the client. In other cases, you might be willing to loosen those guarantees. There are a few popular strategies to do this. The first is to buffer the data. If no worker is available, we want to temporarily store the data in some sort of queue. Channels have this buffering capability built-in. When we created our channel with `make`, we can give our channel a length:
+Произойдёт то, что наш код, принимающий пользовательские данные (которые мы симулировали с помощью генератора случайных чисел) перестанет их отправлять в каналы потому, что не будет доступных получателей.
+ 
+В тех случаях, когда вам необходимо гарантировать обработку данных, вы, возможно, захотите заблокировать их получение на некоторое время. В других случаях, вы можете пойти на уменьшение гарантий обработки. Существуют несколько популярных методов это сделать. Первый – это буфер данных. Если нет доступных обработчиков, нам нужно временно сохранить данные в какого-либо рода очередь. Каналы имеют встроенную поддержку буферизации. Когда мы создаём канал с помощью `make`, мы можем передать длину:
 
 ```go
 c := make(chan int, 100)
 ```
 
-You can make this change, but you'll notice that the processing is still choppy. Buffered channels don't add more capacity; they merely provide a queue for pending work and a good way to deal with a sudden spike. In our example, we're continuously pushing more data than our workers can handle.
+Вы можете сделать это изменение, но вы увидите, что обработка всё ещё прерывается. Буферизация каналов не увеличивает их ёмкость, она просто обеспечивает очередь для ожидания обработки и хороший способ справляться с резкими скачками. В нашем примере мы постоянно отправляем больше данных, чем обработчики могут принять.
 
-Nevertheless, we can get a sense that the buffered channel is, in fact, buffering by looking at the channel's `len`:
+Тем не менее, мы можем посмотреть на то, что представляет собой буферизированный канал и, фактически, буферизация, посмотрев на длину канала `len`:
 
 ```go
 for {
@@ -1793,57 +1797,59 @@ for {
 }
 ```
 
-You can see that it grows and grows until it fills up, at which point sending to our channel start to block again.
+Вы можете увидеть, как она растёт и растет, пока не заполнится, и с этого момента отправка в канал снова будет заблокирована.
 
 ### Select
 
-Even with buffering, there comes a point where we need to start dropping messages. We can't use up an infinite amount of memory hoping a worker frees up. For this, we use Go's `select`.
 
-Syntactically, `select` looks a bit like a switch. With it, we can provide code for when the channel isn't available to send to. First, let's remove our channel's buffering so that we can clearly see how `select` works:
+Даже при использовании буферизации со временем наступает момент, когда нам нужно начинать отбрасывать входящие сообщения. Мы не можем бесконечно занимать память, в надежде, что обработчик освободится. Для таких целей в Go используется `select`.
+
+Синтаксически `select` похож на `switch`. С его помощью, мы можем описать действия, выполняемые при недоступности канала для отправки. Сначала, давайте уберём буферизацию канала, чтобы увидеть работу `select` более наглядно:
 
 ```go
 c := make(chan int)
 ```
 
-Next, we change our `for` loop:
+Затем, мы изменим наш цикл `for`:
 
 ```go
 for {
   select {
   case c <- rand.Int():
-    //optional code here
+    //опциональный код здесь
   default:
-    //this can be left empty to silently drop the data
-    fmt.Println("dropped")
+    //тут можно ничего не писать, чтобы данные молча отбрасывались
+    fmt.Println("выброшено")
   }
   time.Sleep(time.Millisecond * 50)
 }
 ```
 
-We're pushing out 20 messages per second, but our workers can only handle 10 per second; thus, half the messages get dropped.
+Мы посылаем 20 сообщений в секунду, в то время как обработчики могут принять только 10, поэтому половина будет отброшена.
 
-This is only the start of what we can accomplish with `select`. A main purpose of select is to manage multiple channels. Given multiple channels, `select` will block until the first one becomes available. If no channel is available, `default` is executed if one is provided. A channel is randomly picked when multiple are available.
+Это первое из того, что можно сделать используя `select`. Главным его назначением является управление множеством каналов. Получая несколько каналов, `select` блокируется до тех пор, пока один из них не освободится. Если доступных каналов нет, будет выполнен необязательный блок `default`. Если доступно несколько каналов, канал будет выбран случайным образом.
 
-It's hard to come up with a simple example that demonstrates this behavior as it's a fairly advanced feature. The next section might help illustrate this though.
+Трудно придумать простой пример для демонстрации такого поведения, поскольку это довольно продвинутая особенность. Возможно следующая секция сможет помочь показать это.
 
-### Timeout
+### Тайм-Аут
 
-We've looked at buffering messages as well as simply dropping them. Another popular option is to timeout. We're willing to block for some time, but not forever. This is also something easy to achieve in Go. Admittedly, the syntax might be hard to follow but it's such a neat and useful feature that I couldn't leave it out.
+Мы рассмотрели буферные сообщения и простое отбрасывание их. Другой популярный метод – это тайм-аут. Мы будем блокировать выполнение на какое-то время, но не навсегда. Это очень легко реализовать в Go. Правда синтаксис может оттолкнуть, но это такой аккуратный и полезный способ, что я не мог его опустить.
 
-To block for a maximum amount of time, we can use the `time.After` function. Let's look at it then try to peek beyond the magic. To use this, our sender becomes:
+Для блокировки на максимально возможное время мы можем использовать функцию `time.After`. Давайте посмотрим на пример и попробуем разобраться в этой магии. 
+Для этого изменим отправку данных так:
 
 ```go
 for {
   select {
   case c <- rand.Int():
   case <-time.After(time.Millisecond * 100):
-    fmt.Println("timed out", )
+    fmt.Println("тайм-аут", )
   }
   time.Sleep(time.Millisecond * 50)
 }
 ```
 
-`time.After` returns a channel, so we can `select` from it. The channel is written to after the specified time expires. That's it. There's nothing more magical than that. If you're curious, here's what an implementation of `after` could look like:
+`time.After` возвращает канал, так что мы можем использовать `select` для его выбора. Канал будет завершен после истечения указанного времени. Вот и всё. Больше никакой магии нет. Если вам интересно, реализация `after` может выглядеть как-то так:
 
 ```go
 func after(d time.Duration) chan bool {
@@ -1856,52 +1862,54 @@ func after(d time.Duration) chan bool {
 }
 ```
 
-Back to our `select`, there are a couple of things to play with. First, what happens if you add the `default` case back? Can you guess? Try it. If you aren't sure what's going on, remember that `default` fires immediately if no channel is available.
+Возвращаясь к нашему `select`, есть пара вещей, с которыми можно поиграть. Первая, что если мы вернём обратно блок `default`? Можете угадать? Попробуйте. Если вы не уверены, что произойдёт, вспомните, что `default` выполняется немедленно, если ни один из каналов не доступен.
 
-Also, `time.After` is a channel of type `chan time.Time`. In the above example, we simply discard the value that was sent to the channel. If you want though, you can receive it:
+Также `time.After` это канал типа `chan time.Time`. В приведённом выше примере мы просто не использовали отправленное в канал значение. Если хотите, вы можете получить его:
 
 ```go
 case t := <- time.After(time.Millisecond * 100):
-  fmt.Println("timed out at", t)
+  fmt.Println("тайм-аут после ", t)
 ```
 
-Pay close attention to our `select`. Notice that we're sending to `c` but receiving from `time.After`. `select` works the same regardless of whether we're receiving from, sending to, or any combination of channels:
+Обратите особое внимание на наш `select`. Заметьте, что мы отправляем в `c`, но получаем из `time.After`. `select`  работает независимо от того, откуда мы получаем и что мы отправляем, в любой комбинации каналов:
 
-* The first available channel is chosen.
-* If multiple channels are available, one is randomly picked.
-* If no channel is available, the default case is executed.
-* If there's no default, select blocks.
+* Первый доступный канал будет выбран.
+* Если доступно несколько каналов, будет выбран случайный.
+* Если нет доступных каналов, будет выполнен блок `default`.
+* Если блока `default` нет, выполнение `select` блокируется.
 
-Finally, it's common to see a `select` inside a `for`. Consider:
+Наконец, часто можно увидеть `select` внутри `for`:
 
 ```go
 for {
   select {
   case data := <-c:
-    fmt.Printf("worker %d got %d\n", w.id, data)
+    fmt.Printf("обработчик %d получил %d\n", w.id, data)
   case <-time.After(time.Millisecond * 10):
-    fmt.Println("Break time")
+    fmt.Println("Перерыв")
     time.Sleep(time.Second)
   }
 }
 ```
 
-## Before You Continue
+## Перед тем как продолжить
 
-If you're new to the world of concurrent programming, it might all seem rather overwhelming. It categorically demands considerably more attention and care. Go aims to make it easier.
+Если вы новичок в мире конкарентного программирования, оно может показаться вам довольно тягостным. Оно принципиально требует значительно больше внимания и забот. Двигайтесь дальше и будет легче.
 
-Goroutines effectively abstract what's needed to run concurrent code. Channels help eliminate some serious bugs that can happen when data is shared by eliminating the sharing of data. This doesn't just eliminate bugs, but it changes how one approaches concurrent programming. You start to think about concurrency with respect to message passing, rather than dangerous areas of code.
+Горутины являются эффективной абстракцией всего того, что необходимо для запуска конкарентного кода. Каналы помогают устранить различные серьезные ошибки, возникающие во время обмена данными или удаления общих данных. Они не просто избавляют от ошибок, но они изменяют то, как вы обращаетесь с конкарентным программированием. Вы начинаете думать о согласованности по отношению к передаче сообщений больше, чем об опасных участках кода.
 
-Having said that, I still make extensive use of the various synchronization primitives found in the `sync` and `sync/atomic` packages. I think it's important to be comfortable with both. I encourage you to first focus on channels, but when you see a simple example that needs a short-lived lock, consider using a mutex or read-write mutex.
 
-# Conclusion
+Я уже говорил, что до сих пор использую различные примитивы для синхронизации из пакетов `sync` и `sync/atomic`. Я призываю вас сначала сделать упор на каналы, но когда вы встречаете простой случай, в котором необходима кратковременная блокировка, подумайте об использовании мьютекса или мьютекса чтения-записи.
 
-I recently heard Go described as a *boring* language. Boring because it's easy to learn, easy to write and, most importantly, easy to read. Perhaps, I did this reality a disservice. We *did* spend three chapters talking about types and how to declare variables after all.
+# Заключение
 
-If you have a background in a statically typed language, much of what we saw was probably, at best, a refresher. That Go makes pointers visible and that slices are thin wrappers around arrays probably isn't overwhelming to seasoned Java or C# developers.
+Недавно я услышал о том, что Go – это *скучный* язык. Скучный потому, что его легко изучить, легко на нём писать и, что самое главное, легко читать. Возможно, я оказал вам медвежью услугу. Мы *потратили* три главы на разговоры о типах и о том, как объявить переменную.
 
-If you've mostly been making use of dynamic languages, you might feel a little different. It *is* a fair bit to learn. Not least of which is the various syntax around declaration and initialization. Despite being a fan of Go, I find that for all the progress towards simplicity, there's something less than simple about it. Still, it comes down to some basic rules (like you can only declare variable once and `:=` does declare the variable) and fundamental understanding (like `new(X)` or `&X{}` only allocate memory, but slices, maps and channels require more initialization and thus, `make`).
+Если у вас уже был опыт работы со статически типизированным языком, многое из того, что вы видели, в лучшем случае освежило ваши знания.
+То, что Go делает видимыми указатели и то, что срезы являются просто тонкими обёртками вокруг массивов, скорее всего, не удивительно для опытных Java или C# разработчиков.
 
-Beyond this, Go gives us a simple but effective way to organize our code. Interfaces, return-based error handling, `defer` for resource management and a simple way to achieve composition.
+Если вы в основном использовали динамические языки, вы могли почувствовать небольшую разницу. Её нужно понять. Не на последнем месте стоит также синтаксис объявления и инициализации. Несмотря на то, что я фанат Go, я считаю, что весь успех в достижении простоты. И все сводится к простым правилам (например то, что вы можете объявить переменную только один раз и `:=` делает это) и фундаментальным понятиям (то, что `new(X)` или `&X{}` только выделяет память, но срезы, карты и каналы требуют дополнительных действий при инициализации и поэтому нужен `make`).
 
-Last but not least is the built-in support for concurrency. There's little to say about goroutines other than they’re effective and simple (simple to use anyway). It's a good abstraction. Channels are more complicated. I always think it's important to understand basics before using high-level wrappers. I *do* think learning about concurrent programming without channels is useful. Still, channels are implemented in a way that, to me, doesn't feel quite like a simple abstraction. They are almost their own fundamental building block. I say this because they change how you write and think about concurrent programming. Given how hard concurrent programming can be, that is definitely a good thing.
+Помимо этого, Go предоставляет простой, но эффективный способ организации кода. Интерфейсы, основанная на возвращении обработка ошибок, `defer` для управления ресурсами и простой способ достижения композиции.
+
+Последним, но важным является встроенная поддержка конкарентности. Горутины довольно эффективны и просты (просты в использовании по крайней мере). Это хорошая абстракция. Каналы немного сложнее. Я всегда считал, что понимание базовых вещей важно перед использованием высокоуровневых обёрток. Я думаю полезно узнать о конкарентном программировании без каналов. Всё же каналы реализованы таким образом, что они совсем не похожи на простую абстракцию. Они почти как самостоятельные фундаментальные блоки. Я говорю это потому, что они изменяют стиль написания и понимания конкарентного программирования. Учитывая то, каким сложным конкарентное программирование может быть, реализация определённо хороша.
