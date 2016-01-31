@@ -647,7 +647,7 @@ fmt.Println(goku.Person.Name)
 
 ```go
 func (s *Saiyan) Introduce() {
-  fmt.Printf("Hi, I'm %s. Ya!\n", p.Name)
+  fmt.Printf("Hi, I'm %s. Ya!\n", s.Name)
 }
 ```
 
