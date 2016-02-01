@@ -580,11 +580,11 @@ gohan := &Saiyan{
 
 Go поддерживает композицию, которая является включением одной структуры в другую. В некоторых языках это называется трейт (trait) или примесь (mixin). Языки, которые не имеют явной поддержки механизма композиции всегда могут пойти долгим путем. В Java:
 
-```go
+```java
 public class Person {
-  private string name;
+  private String name;
 
-  public string getName() {
+  public String getName() {
     return this.name;
   }
 }
@@ -594,7 +594,7 @@ public class Saiyan {
   private Person person;
 
   // ме переадресуем вызов классу Person
-  public string getName() {
+  public String getName() {
     return this.person.getName();
   }
   ...
