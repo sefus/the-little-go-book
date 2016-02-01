@@ -235,7 +235,7 @@ func main() {
 Если у вас нет доступа к Интернету, можно посмотреть документацию локально, выполнив команду:
 
 ```
-godoc --http=:6060
+godoc -http=:6060
 ```
 
 И ввести в браузере адрес `http://localhost:6060`
@@ -672,8 +672,8 @@ func (s *Saiyan) Introduce() {
 
 ```go
 type Point struct {
-  X int,
-  Y int,
+  X int
+  Y int
 }
 ```
 
@@ -1282,7 +1282,7 @@ func (l ConsoleLogger) Log(message string) {
 ```go
 package main
 
-import(
+import (
   "fmt"
   "os"
   "strconv"
@@ -1361,7 +1361,7 @@ func main() {
 ```go
 package main
 
-import(
+import (
   "fmt"
   "os"
 )
@@ -1642,7 +1642,7 @@ var (
 )
 
 func main() {
-  go func(){ lock.Lock() }()
+  go func() { lock.Lock() }()
   time.Sleep(time.Millisecond * 10)
   lock.Lock()
 }
@@ -1681,7 +1681,7 @@ CHANNEL <- DATA
 и получаем из него
 
 ```
-VAR := <- CHANNEL
+VAR := <-CHANNEL
 ```
 
 Стрелка указывает направление потока данных. Когда происходит отправка, данные передаются в канал. При получении данные извлекаются из канала.
@@ -1697,7 +1697,7 @@ type Worker struct {
 
 func (w Worker) process(c chan int) {
   for {
-    data := <- c
+    data := <-c
     fmt.Printf("обработчик %d получил %d\n", w.id, data)
   }
 }
@@ -1754,7 +1754,7 @@ type Worker struct {
 
 func (w *Worker) process(c chan int) {
   for {
-    data := <- c
+    data := <-c
     fmt.Printf("обработчик %d получил %d\n", w.id, data)
   }
 }
@@ -1771,7 +1771,7 @@ func (w *Worker) process(c chan int) {
 
 ```go
 for {
-  data := <- c
+  data := <-c
   fmt.Printf("обработчик %d получил %d\n", w.id, data)
   time.Sleep(time.Millisecond * 500)
 }
@@ -1867,7 +1867,7 @@ func after(d time.Duration) chan bool {
 Также `time.After` это канал типа `chan time.Time`. В приведённом выше примере мы просто не использовали отправленное в канал значение. Если хотите, вы можете получить его:
 
 ```go
-case t := <- time.After(time.Millisecond * 100):
+case t := <-time.After(time.Millisecond * 100):
   fmt.Println("тайм-аут после ", t)
 ```
 
